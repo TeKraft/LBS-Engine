@@ -7,9 +7,9 @@
         "numberOfImages": 3
     },
     "map": {
-        "center": [51.962522, 7.625615],
+        "center": [51.9692495, 7.596022],
         "zoomable": true,
         "draggable": true,
-        "zoom": 8
+        "zoom": 20
     }
 }

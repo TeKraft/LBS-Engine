@@ -22,7 +22,8 @@ class Map extends React.Component {
         this.state = {
             position: config.map.center,
             zoom: config.map.zoom,
-            hasLocation: false
+            hasLocation: false,
+            // markers: [[51.9692495, 7.596022]]
         }
         //marker symbol for the "you are here" marker
         this.positionMarker = L.icon({
@@ -45,10 +46,69 @@ class Map extends React.Component {
             if(that.props.gps) {
                 that.setState({
                     position: pos,
-                    hasLocation: true
+                    hasLocation: true,
+                    moving: false
                 });
             }
         })
+    }
+
+    componentWillUnmount() {
+        navigator.geolocation.clearWatch(this.watchId);
+    }
+
+    updateLocation() {
+        console.log('\n#####');
+        var that = this;
+        that.watchID = locationManager.watchLocation().then(function success(position) {
+            var pos = [];
+            pos.push(position.latitude);
+            pos.push(position.longitude);
+
+            var refs = {};
+            if(that.props.gps) {
+                that.setState({
+                    position: pos,
+                    hasLocation: true,
+                    moving: true,
+
+                    onChangeCurrPosition: ref => {
+                        refs.marker = ref;
+                    },
+                    onChangeZoomLevel: ref => {
+                        refs.zoomLvl = ref;
+                    }
+                });
+                console.log(refs.marker);
+                console.log(JSON.stringify(refs.marker));
+                const newPos = refs.marker.leafletElement.setLatLng({lat: pos[0], lng: pos[1]});
+                console.log(pos[0] + ' lat - lng ' + pos[1]);
+                that.setState({
+                    zoom: refs.zoomLvl
+                });
+                console.log(refs.zoomLvl);
+            }
+        }, function error(err) {
+            console.log(err);
+            console.log("error watching location");
+        },
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 5 },
+        );
+    }
+
+    getZoomLevel() {
+        console.log('\nZoom');
+        var that = this;
+        var refs = {};
+        that.setState({
+            onChangeZoomLevel: ref => {
+                refs.zoomLvl = ref;
+            },
+            zoom: refs.zoomLvl
+        })
+        console.log(refs);
+        console.log(this.state);
+        console.log(that.state);
     }
 
     /**
@@ -137,10 +197,10 @@ class Map extends React.Component {
     }
 
     renderMapWithLayers() {
-        //check if the location is enabled and available
+        // check if the location is enabled and available
         const marker = this.state.hasLocation && this.props.gps
             ? (
-                <leaflet.Marker position={this.state.position} icon={this.positionMarker} />
+                <leaflet.Marker position={this.state.position} icon={this.positionMarker} ref={this.state.onChangeCurrPosition} />
             )
             : null;
         return (
@@ -152,7 +212,8 @@ class Map extends React.Component {
                 scrollWheelZoom={this.props.zoomable}
                 zoomDelta={this.props.zoomable == false ? 0 : 1}
                 onOverlayadd={this.handleOverlayadd}
-                onOverlayremove={this.handleOverlayremove}>
+                onOverlayremove={this.handleOverlayremove}
+                ref={this.state.onChangeZoomLevel}>
                 <OfflineLayer.OfflineLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -168,31 +229,44 @@ class Map extends React.Component {
 
     //render the map with the layerControl
     render() {
+        this.componentDidMount();
+        this.updateLocation();
+
+        // this.getZoomLevel();
         //if the layerControl is active, the map is rendered with the layercontrol
         if (this.props.layerControl) {
             return this.renderMapWithLayers()
         }
         else {
-            //check if the location is enabled and available
+            // check if the location is enabled and available
             const marker = this.state.hasLocation && this.props.gps
                 ? (
-                    <leaflet.Marker position={this.state.position} icon={this.positionMarker} />
+                    <leaflet.Marker position={this.state.position} icon={this.positionMarker} ref={this.state.onChangeCurrPosition} />
                 )
                 : null;
             //return the map without any layers shown
             return (
-                <leaflet.Map center={this.state.position}
+                <leaflet.Map 
+                    center={this.state.position}
+                    onClick={this.addMarker}
                     zoom={this.state.zoom}
                     dragging={this.props.draggable}
                     zoomControl={this.props.zoomable}
                     scrollWheelZoom={this.props.zoomable}
-                    zoomDelta={this.props.zoomable == false ? 0 : 1}>
+                    zoomDelta={this.props.zoomable == false ? 0 : 1}
+                    ref={this.state.onChangeZoomLevel}>
                     <OfflineLayer.OfflineLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
-                    <OfflineLayer.OfflineControl />                
-                    {marker}
+                    <OfflineLayer.OfflineControl />
+                    {this.state.markers.map((position, idx) => 
+                        <leaflet.Marker key={`marker-${idx}`} position={position}>
+                        <leaflet.Popup>
+                            <span>A pretty CSS3 popup. <br/> Easily customizable.</span>
+                        </leaflet.Popup>
+                        </leaflet.Marker>
+                        )}
                 </leaflet.Map>
             )
         }
