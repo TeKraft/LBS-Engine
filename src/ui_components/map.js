@@ -32,6 +32,14 @@ class Map extends React.Component {
             iconAnchor: [25, 48],
             popupAnchor: [-3, -76]
         });
+        //code added:Akhil - different icon for marker
+        console.log('printing the koffer');
+        this.tSpotMarker = L.icon({
+            iconUrl: 'img/koffer.png',
+            iconSize: [50, 50],
+            iconAnchor: [25, 48],
+            popupAnchor: [-3, -76]
+        });
     }
 
     /**
@@ -180,6 +188,15 @@ class Map extends React.Component {
                         layerElement.push(<leaflet.Marker position={layers[layer].items[i].coords} key={layers[layer].items[i].name} />)
                     }
                 }
+            }
+            //Akhil:else it is a zone
+            else if (layers[layer].type == 'zone'){
+                for (var i = 0; i < layers[layer].items.length; i++) {
+                    console.log('Printing the zonal circles');
+                    layerElement.push(<leaflet.Circle center={layers[layer].items[i].center} color={layers[layer].items[i].color} radius={layers[layer].items[i].radius}
+                                        key={layers[layer].items[i].name} />)
+                }
+
             }
             //else it is a route
             else if (layers[layer].type == 'route') {

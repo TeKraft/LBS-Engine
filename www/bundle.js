@@ -90402,7 +90402,6 @@ class App extends React.Component {
         this.handleClickHelp = this.handleClickHelp.bind(this);
         this.renderList = this.renderList.bind(this);
         this.renderTabs = this.renderTabs.bind(this);
-        // state connected to class
         this.state = {
             isOpen: false,
             //elements used for lifted up state of the config file
@@ -90457,7 +90456,6 @@ class App extends React.Component {
      * @param {Boolean} bool value of the change 
      */
     handleDragMapChange(bool) {
-        console.log("app.js");
         this.setState({ draggable: bool });
     }
 
@@ -90832,7 +90830,7 @@ class Map extends React.Component {
                     }
                 });
                 console.log(refs.marker);
-                console.log(JSON.stringify(ref.marker));
+                console.log(JSON.stringify(refs.marker));
                 const newPos = refs.marker.leafletElement.setLatLng({ lat: pos[0], lng: pos[1] });
                 console.log(pos[0] + ' lat - lng ' + pos[1]);
                 that.setState({
@@ -91192,14 +91190,12 @@ class Settings extends React.Component {
 
     //handle toggle of map dragging 
     handleChangeDragMap(e) {
-        console.log("settings.js");
         this.props.onDragMapChange(e.target.checked);
         this.createLog('Map Dragging', e.target.checked);
     }
 
     //handle toggle of map zooming
     handleChangeZoomMap(e) {
-        console.log(e);
         this.props.onZoomMapChange(e.target.checked);
         this.createLog('Map Zooming', e.target.checked);
     }

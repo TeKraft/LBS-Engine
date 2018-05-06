@@ -1,62 +1,54 @@
 {
-    "Layer1": {
+    "T-spots": {
         "type": "marker",
         "items": [
             {
                 "coords": [
-                    52.00,
-                    7.00
+                    51.963886,
+                    7.610546
                 ],
-                "name": "first POI",
-                "popup": "Hello I'm a pop-up"
+                "name": "Botanical Garden",
+                "popup": "Botanical Garden"
             },
             {
                 "coords": [
-                    53.00,
-                    7.00
+                    51.962900,
+                    7.629437
                 ],
-                "name": "second POI"
+                "name": "St. Lamberti Church",
+                "popup": "St. Lamberti Church"
+            },
+            {
+                "coords": [
+                    51.948110,
+                    7.587544
+                ],
+                "name": "All-weather Zoo",
+                "popup": "All-weather Zoo"
+            },
+            {
+                "coords": [
+                    51.960801,
+                    7.624331
+                ],
+                "name": "LWL Cultural Museum",
+                "popup": "LWL Cultural Museum"
             }
         ]
     },
-    "Layer2": {
-        "type": "marker",
-        "items": [
+    "T-Zones": {
+        "type":"marker",
+        "items":[
             {
-                "coords": [
-                    52.00,
-                    8.00
+                "coords":[
+                    51.963886,
+                    7.610546
                 ],
-                "name": "third POI"
-            },
-            {
-                "coords": [
-                    52.00,
-                    9.00
-                ],
-                "name": "fourth POI",
-                "popup": "Here is another pop-up"
+                "radius":100,
+                "name": "Botanical Garden zone"
             }
         ]
-    },
-    "Layer3": {
-        "type": "marker",
-        "items": [
-            {
-                "coords": [
-                    51.00,
-                    7.00
-                ],
-                "name": "fifth POI"
-            },
-            {
-                "coords": [
-                    50.00,
-                    7.00
-                ],
-                "name": "sixth POI"
-            }
-        ]
+
     },
     "Route1": {
         "type": "route",
