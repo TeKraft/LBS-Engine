@@ -90150,64 +90150,56 @@ module.exports={
 }
 },{}],261:[function(require,module,exports){
 module.exports={
-    "Layer1": {
+    "T-spots": {
         "type": "marker",
         "items": [
             {
                 "coords": [
-                    52.00,
-                    7.00
+                    51.963886,
+                    7.610546
                 ],
-                "name": "first POI",
-                "popup": "Hello I'm a pop-up"
+                "name": "Botanical Garden",
+                "popup": "Botanical Garden"
             },
             {
                 "coords": [
-                    53.00,
-                    7.00
+                    51.962900,
+                    7.629437
                 ],
-                "name": "second POI"
+                "name": "St. Lamberti Church",
+                "popup": "St. Lamberti Church"
+            },
+            {
+                "coords": [
+                    51.948110,
+                    7.587544
+                ],
+                "name": "All-weather Zoo",
+                "popup": "All-weather Zoo"
+            },
+            {
+                "coords": [
+                    51.960801,
+                    7.624331
+                ],
+                "name": "LWL Cultural Museum",
+                "popup": "LWL Cultural Museum"
             }
         ]
     },
-    "Layer2": {
-        "type": "marker",
-        "items": [
+    "T-Zones": {
+        "type":"marker",
+        "items":[
             {
-                "coords": [
-                    52.00,
-                    8.00
+                "coords":[
+                    51.963886,
+                    7.610546
                 ],
-                "name": "third POI"
-            },
-            {
-                "coords": [
-                    52.00,
-                    9.00
-                ],
-                "name": "fourth POI",
-                "popup": "Here is another pop-up"
+                "radius":100,
+                "name": "Botanical Garden zone"
             }
         ]
-    },
-    "Layer3": {
-        "type": "marker",
-        "items": [
-            {
-                "coords": [
-                    51.00,
-                    7.00
-                ],
-                "name": "fifth POI"
-            },
-            {
-                "coords": [
-                    50.00,
-                    7.00
-                ],
-                "name": "sixth POI"
-            }
-        ]
+
     },
     "Route1": {
         "type": "route",
@@ -90773,6 +90765,7 @@ class Map extends React.Component {
             position: config.map.center,
             zoom: config.map.zoom,
             hasLocation: false
+            // markerPosition: config.map.center  
             // markers: [[51.9692495, 7.596022]]
 
             //marker symbol for the "you are here" marker
@@ -90782,6 +90775,38 @@ class Map extends React.Component {
             iconAnchor: [25, 48],
             popupAnchor: [-3, -76]
         });
+        //code added:Akhil - different icon for marker
+        console.log('printing the koffer');
+        this.tSpotMarker = L.icon({
+            iconUrl: 'img/koffer.png',
+            iconSize: [50, 50],
+            iconAnchor: [25, 48],
+            popupAnchor: [-3, -76]
+        });
+
+        var that = this;
+        that.watchID = locationManager.watchLocation().then(function success(position) {
+            var refs = {};
+            if (that.props.gps) {
+                that.setState({
+                    position: [position.latitude, position.longitude],
+                    // onChangeCurrPosition: ref => {
+                    //     refs.marker = ref;
+                    // },
+                    onChangeZoomLevel: ref => {
+                        refs.zoomLvl = ref;
+                    }
+                });
+                that.setState({
+                    markerPosition: refs.marker,
+                    zoom: refs.zoomLvl.viewport.zoom
+                });
+            }
+        }, function error(err) {
+            console.log(err);
+            console.log("error watching location");
+        }, { enableHighAccuracy: true, timeout: 250, maximumAge: 1000, distanceFilter: 1 } // timeout: 20000
+        );
     }
 
     /**
@@ -90796,8 +90821,7 @@ class Map extends React.Component {
             if (that.props.gps) {
                 that.setState({
                     position: pos,
-                    hasLocation: true,
-                    moving: false
+                    hasLocation: true
                 });
             }
         });
@@ -90807,8 +90831,24 @@ class Map extends React.Component {
         navigator.geolocation.clearWatch(this.watchId);
     }
 
+    updateZoomLvl() {
+        var that = this;
+        var refs = {};
+        if (that.props.gps) {
+            that.setState({
+                onChangeZoomLevel: ref => {
+                    refs.zoomLvl = ref;
+                }
+            });
+        }
+        if (that.state.zoomLvl != undefined) {
+            that.setState({
+                zoom: refs.zoomLvl
+            });
+        }
+    }
+
     updateLocation() {
-        console.log('\n#####');
         var that = this;
         that.watchID = locationManager.watchLocation().then(function success(position) {
             var pos = [];
@@ -90819,44 +90859,22 @@ class Map extends React.Component {
             if (that.props.gps) {
                 that.setState({
                     position: pos,
-                    hasLocation: true,
-                    moving: true,
-
-                    onChangeCurrPosition: ref => {
-                        refs.marker = ref;
-                    },
                     onChangeZoomLevel: ref => {
                         refs.zoomLvl = ref;
                     }
                 });
-                console.log(refs.marker);
-                console.log(JSON.stringify(refs.marker));
-                const newPos = refs.marker.leafletElement.setLatLng({ lat: pos[0], lng: pos[1] });
-                console.log(pos[0] + ' lat - lng ' + pos[1]);
-                that.setState({
-                    zoom: refs.zoomLvl
-                });
-                console.log(refs.zoomLvl);
+                if (that.state.zoomLvl != undefined) {
+                    that.setState({
+                        zoom: refs.zoomLvl
+                    });
+                }
+                console.log(that.state);
             }
         }, function error(err) {
             console.log(err);
             console.log("error watching location");
-        }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 5 });
-    }
-
-    getZoomLevel() {
-        console.log('\nZoom');
-        var that = this;
-        var refs = {};
-        that.setState({
-            onChangeZoomLevel: ref => {
-                refs.zoomLvl = ref;
-            },
-            zoom: refs.zoomLvl
-        });
-        console.log(refs);
-        console.log(this.state);
-        console.log(that.state);
+        }, { enableHighAccuracy: true, timeout: 250, maximumAge: 1000, distanceFilter: 1 } // timeout: 20000
+        );
     }
 
     /**
@@ -90933,10 +90951,18 @@ class Map extends React.Component {
                     }
                 }
             }
-            //else it is a route
-            else if (layers[layer].type == 'route') {
-                    layerElement.push(React.createElement(leaflet.Polyline, { positions: layers[layer].coords, color: 'red', key: layers[layer].name }));
+            //Akhil:else it is a zone
+            else if (layers[layer].type == 'zone') {
+                    for (var i = 0; i < layers[layer].items.length; i++) {
+                        console.log('Printing the zonal circles');
+                        layerElement.push(React.createElement(leaflet.Circle, { center: layers[layer].items[i].center, color: layers[layer].items[i].color, radius: layers[layer].items[i].radius,
+                            key: layers[layer].items[i].name }));
+                    }
                 }
+                //else it is a route
+                else if (layers[layer].type == 'route') {
+                        layerElement.push(React.createElement(leaflet.Polyline, { positions: layers[layer].coords, color: 'red', key: layers[layer].name }));
+                    }
             mapLayers.push(React.createElement(
                 leaflet.LayersControl.Overlay,
                 { key: layer,
@@ -90984,9 +91010,7 @@ class Map extends React.Component {
     //render the map with the layerControl
     render() {
         this.componentDidMount();
-        this.updateLocation();
 
-        // this.getZoomLevel();
         //if the layerControl is active, the map is rendered with the layercontrol
         if (this.props.layerControl) {
             return this.renderMapWithLayers();
