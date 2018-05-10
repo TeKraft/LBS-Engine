@@ -23,7 +23,7 @@ class Map extends React.Component {
             position: config.map.center,
             zoom: config.map.zoom,
             hasLocation: false,
-            positionInfo: 'just rendered'
+            positionInfo: 'Enable GPS to see your location.' // set to default, because if the GPS location is disabled there won't be data to show
         }
         //marker symbol for the "you are here" marker
         this.positionMarker = L.icon({
@@ -142,7 +142,7 @@ class Map extends React.Component {
                 for (var i = 0; i < layers[layer].items.length; i++) {
                     //if there is a popup, insert it into the map
                     if(layers[layer].items[i].popup != undefined) {
-                        layerElement.push(<leaflet.Marker position={layers[layer].items[i].coords} key={layers[layer].items[i].name}>
+                        layerElement.push(<leaflet.Marker position={layers[layer].items[i].coords} key={layers[layer].items[i].name} icon={this.tSpotMarker}>
                             <leaflet.Popup>
                                 <span>
                                     {layers[layer].items[i].popup}
@@ -151,7 +151,7 @@ class Map extends React.Component {
                             </leaflet.Marker>)
                     }
                     else {
-                        layerElement.push(<leaflet.Marker position={layers[layer].items[i].coords} key={layers[layer].items[i].name} />)
+                        layerElement.push(<leaflet.Marker position={layers[layer].items[i].coords} key={layers[layer].items[i].name} icon={this.tSpotMarker} />)
                     }
                 }
             }

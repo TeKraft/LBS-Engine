@@ -89868,24 +89868,8 @@ function getLocation() {
     });
 }
 
-function watchLocation() {
-
-    return new Promise(function (resolve, reject) {
-        navigator.geolocation.watchPosition(function success(position) {
-            // console.log("watched position: "); //, position);
-            // console.log(position.coords);
-            resolve(position.coords);
-        }, function error(err) {
-            console.log("err watched position");
-            console.log(err);
-            reject(err);
-        });
-    });
-}
-
 module.exports = {
-    getLocation: getLocation,
-    watchLocation: watchLocation
+    getLocation: getLocation
 };
 
 },{}],258:[function(require,module,exports){
@@ -90755,7 +90739,6 @@ const OfflineLayer = require('../business_components/offlineLayer.js');
 class Map extends React.Component {
 
     constructor(props) {
-        console.log("00 constructor");
         super(props);
         this.addLayers = this.addLayers.bind(this);
         this.renderMapWithLayers = this.renderMapWithLayers.bind(this);
@@ -90766,9 +90749,7 @@ class Map extends React.Component {
             position: config.map.center,
             zoom: config.map.zoom,
             hasLocation: false,
-            positionInfo: 'just rendered'
-            // markerPosition: config.map.center  
-            // markers: [[51.9692495, 7.596022]]
+            positionInfo: 'Enable GPS to see your location.' // set to default, because if the GPS location is disabled there won't be data to show
 
             //marker symbol for the "you are here" marker
         };this.positionMarker = L.icon({
@@ -90789,9 +90770,9 @@ class Map extends React.Component {
 
     /**
      * Insert the gps location of the user into the map, if the gps-setting is true.
+     * Update location and keep zoom level as soon as the user moves.
      */
     componentDidMount() {
-        console.log("03 componentDidMount()");
         var that = this;
         locationManager.getLocation().then(function success(position) {
             var pos = [];
@@ -90804,13 +90785,10 @@ class Map extends React.Component {
                 });
             }
         });
-        // var map = this;
-        that.watchID = navigator.geolocation.watchPosition(function success(position) {
-            console.log('watching');
-            console.log(position);
-            console.log(that.map.leafletElement.getZoom());
-            var zoomLvl = that.map.leafletElement.getZoom();
 
+        // Update location and keep current zoom level as soon as movement begins. Distancefilter is set to 1 meter
+        that.watchID = navigator.geolocation.watchPosition(function success(position) {
+            var zoomLvl = that.map.leafletElement.getZoom();
             var msg = `zoom: ${zoomLvl}, lat: ${position.coords.latitude}, lng: ${position.coords.longitude} .`;
             if (that.props.gps) {
                 that.setState({
@@ -90819,110 +90797,17 @@ class Map extends React.Component {
                     zoom: zoomLvl
                 });
             }
-            console.log('set GPS location');
+            console.log(`GPS location set - ${msg}`);
         }, function error(err) {
             console.log(err);
             console.log("error watching location");
-        }, { enableHighAccuracy: true, timeout: 250, maximumAge: 1000, distanceFilter: 1 } // timeout: 20000
+        }, { enableHighAccuracy: true, timeout: 500, maximumAge: 1000, distanceFilter: 1 } // timeout: 20000
         );
-
-        // var map = this;
-        // map.watchID = navigator.geolocation.watchPosition(function success(position) {
-        //     console.log("\nposition");
-        //     console.log(position);
-        //     var refs = {};
-        //     if(map.props.gps) {
-        //         map.setState({
-        //             position: [position.latitude, position.longitude],
-        //             // onChangeCurrPosition: ref => {
-        //             //     refs.marker = ref;
-        //             // },
-        //             onChangeZoomLevel: ref => {
-        //                 refs.zoomLvl = ref;
-        //             }
-        //         });
-        //         if (refs.zoomLvl) {
-        //             map.setState({
-        //                 markerPosition: refs.marker,
-        //                 zoom: refs.zoomLvl.viewport.zoom
-        //             });
-        //         }
-        //     }
-        //     console.log('set GPS location');
-        // }, function error(err) {
-        //     console.log(err);
-        //     console.log("error watching location");
-        // },
-        // { enableHighAccuracy: true, timeout: 250, maximumAge: 1000, distanceFilter: 1 },    // timeout: 20000
-        // );
     }
 
     componentWillUnmount() {
         navigator.geolocation.clearWatch(this.watchId);
     }
-
-    updateZoomLvl() {
-        var that = this;
-        var refs = {};
-        if (that.props.gps) {
-            that.setState({
-                onChangeZoomLevel: ref => {
-                    refs.zoomLvl = ref;
-                }
-            });
-        }
-        if (that.state.zoomLvl != undefined) {
-            that.setState({
-                zoom: refs.zoomLvl
-            });
-        }
-    }
-
-    // updateLocation() {
-    //     var that = this;
-    //     // that.watchID = locationManager.watchLocation().then(function success(position) {
-    //     //     var pos = [];
-    //     //     pos.push(position.latitude);
-    //     //     pos.push(position.longitude);
-
-    //     //     var refs = {};
-    //     //     if(that.props.gps) {
-    //     //         that.setState({
-    //     //             position: pos,
-    //     //             onChangeZoomLevel: ref => {
-    //     //                 refs.zoomLvl = ref;
-    //     //             }
-    //     //         });
-    //     //         if (that.state.zoomLvl != undefined) {
-    //     //             that.setState({
-    //     //                 zoom: refs.zoomLvl
-    //     //             });
-    //     //         }
-    //     //         console.log(that.state);
-    //     //     }
-    //     that.watchID = navigator.geolocation.watchPosition(function success(position) {
-    //         var refs = {};
-    //         if(that.props.gps) {
-    //             that.setState({
-    //                 position: pos,
-    //                 onChangeZoomLevel: ref => {
-    //                     refs.zoomLvl = ref;
-    //                 }
-    //             });
-    //             if (that.state.zoomLvl != undefined) {
-    //                 that.setState({
-    //                     zoom: refs.zoomLvl
-    //                 });
-    //             }
-    //         }
-    //             console.log(that.state);
-    //     }, function error(err) {
-    //         console.log(err);
-    //         console.log("error watching location");
-    //     },
-    //     { enableHighAccuracy: true, timeout: 250, maximumAge: 1000, distanceFilter: 1 },    // timeout: 20000
-    //     );
-    // }
 
     /**
      * Write a log that notes the change of active layers
@@ -90982,7 +90867,7 @@ class Map extends React.Component {
                     if (layers[layer].items[i].popup != undefined) {
                         layerElement.push(React.createElement(
                             leaflet.Marker,
-                            { position: layers[layer].items[i].coords, key: layers[layer].items[i].name },
+                            { position: layers[layer].items[i].coords, key: layers[layer].items[i].name, icon: this.tSpotMarker },
                             React.createElement(
                                 leaflet.Popup,
                                 null,
@@ -90994,7 +90879,7 @@ class Map extends React.Component {
                             )
                         ));
                     } else {
-                        layerElement.push(React.createElement(leaflet.Marker, { position: layers[layer].items[i].coords, key: layers[layer].items[i].name }));
+                        layerElement.push(React.createElement(leaflet.Marker, { position: layers[layer].items[i].coords, key: layers[layer].items[i].name, icon: this.tSpotMarker }));
                     }
                 }
             }
@@ -91026,7 +90911,6 @@ class Map extends React.Component {
     }
 
     renderMapWithLayers() {
-        console.log(this.state.positionInfo);
         // check if the location is enabled and available
         const marker = this.state.hasLocation && this.props.gps ? React.createElement(
             leaflet.Marker,
@@ -91071,10 +90955,6 @@ class Map extends React.Component {
 
     //render the map with the layerControl
     render() {
-        console.log('01 render');
-        // this.componentDidMount();
-        console.log('02 render');
-
         //if the layerControl is active, the map is rendered with the layercontrol
         if (this.props.layerControl) {
             return this.renderMapWithLayers();
