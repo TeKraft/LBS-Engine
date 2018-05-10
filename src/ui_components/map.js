@@ -22,9 +22,8 @@ class Map extends React.Component {
         this.state = {
             position: config.map.center,
             zoom: config.map.zoom,
-            hasLocation: false
-            // markerPosition: config.map.center  
-            // markers: [[51.9692495, 7.596022]]
+            hasLocation: false,
+            positionInfo: 'just rendered'
         }
         //marker symbol for the "you are here" marker
         this.positionMarker = L.icon({
@@ -42,34 +41,11 @@ class Map extends React.Component {
             popupAnchor: [-3, -76]
         });
 
-        var that = this;
-        that.watchID = locationManager.watchLocation().then(function success(position) {
-            var refs = {};
-            if(that.props.gps) {
-                that.setState({
-                    position: [position.latitude, position.longitude],
-                    // onChangeCurrPosition: ref => {
-                    //     refs.marker = ref;
-                    // },
-                    onChangeZoomLevel: ref => {
-                        refs.zoomLvl = ref;
-                    }
-                });
-                that.setState({
-                    markerPosition: refs.marker,
-                    zoom: refs.zoomLvl.viewport.zoom
-                });
-            }
-        }, function error(err) {
-            console.log(err);
-            console.log("error watching location");
-        },
-        { enableHighAccuracy: true, timeout: 250, maximumAge: 1000, distanceFilter: 1 },    // timeout: 20000
-        );
     }
 
     /**
      * Insert the gps location of the user into the map, if the gps-setting is true.
+     * Update location and keep zoom level as soon as the user moves.
      */
     componentDidMount() {
         var that = this;
@@ -84,57 +60,29 @@ class Map extends React.Component {
                 });
             }
         })
-    }
 
-    componentWillUnmount() {
-        navigator.geolocation.clearWatch(this.watchId);
-    }
-
-    updateZoomLvl() {
-        var that = this;
-        var refs = {};
-        if(that.props.gps) {
-            that.setState({
-                onChangeZoomLevel: ref => {
-                    refs.zoomLvl = ref;
-                }
-            });
-        }
-        if (that.state.zoomLvl != undefined) {
-            that.setState({
-                zoom: refs.zoomLvl
-            });
-        }
-    }
-
-    updateLocation() {
-        var that = this;
-        that.watchID = locationManager.watchLocation().then(function success(position) {
-            var pos = [];
-            pos.push(position.latitude);
-            pos.push(position.longitude);
-
-            var refs = {};
+        // Update location and keep current zoom level as soon as movement begins. Distancefilter is set to 1 meter
+        that.watchID = navigator.geolocation.watchPosition(function success(position) {
+            var zoomLvl = that.map.leafletElement.getZoom();
+            var msg = `zoom: ${zoomLvl}, lat: ${position.coords.latitude}, lng: ${position.coords.longitude} .`
             if(that.props.gps) {
                 that.setState({
-                    position: pos,
-                    onChangeZoomLevel: ref => {
-                        refs.zoomLvl = ref;
-                    }
+                    position: [position.coords.latitude, position.coords.longitude],
+                    positionInfo: msg,
+                    zoom: zoomLvl
                 });
-                if (that.state.zoomLvl != undefined) {
-                    that.setState({
-                        zoom: refs.zoomLvl
-                    });
-                }
-                console.log(that.state);
             }
+            console.log(`GPS location set - ${msg}`);
         }, function error(err) {
             console.log(err);
             console.log("error watching location");
         },
-        { enableHighAccuracy: true, timeout: 250, maximumAge: 1000, distanceFilter: 1 },    // timeout: 20000
+        { enableHighAccuracy: true, timeout: 500, maximumAge: 1000, distanceFilter: 1 },    // timeout: 20000
         );
+    }
+
+    componentWillUnmount() {
+        navigator.geolocation.clearWatch(this.watchId);
     }
 
     /**
@@ -235,7 +183,13 @@ class Map extends React.Component {
         // check if the location is enabled and available
         const marker = this.state.hasLocation && this.props.gps
             ? (
-                <leaflet.Marker position={this.state.position} icon={this.positionMarker} ref={this.state.onChangeCurrPosition} />
+                <leaflet.Marker position={this.state.position} icon={this.positionMarker} ref={this.state.onChangeCurrPosition}>
+                    <leaflet.Popup>
+                        <span>
+                            {this.state.positionInfo}
+                        </span>
+                    </leaflet.Popup>
+                </leaflet.Marker>
             )
             : null;
         return (
@@ -248,7 +202,7 @@ class Map extends React.Component {
                 zoomDelta={this.props.zoomable == false ? 0 : 1}
                 onOverlayadd={this.handleOverlayadd}
                 onOverlayremove={this.handleOverlayremove}
-                ref={this.state.onChangeZoomLevel}>
+                ref={(ref) => {this.map = ref;}}>
                 <OfflineLayer.OfflineLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -264,17 +218,22 @@ class Map extends React.Component {
 
     //render the map with the layerControl
     render() {
-        this.componentDidMount();
-
         //if the layerControl is active, the map is rendered with the layercontrol
         if (this.props.layerControl) {
             return this.renderMapWithLayers()
         }
         else {
+            console.log(this.state.positionInfo);
             // check if the location is enabled and available
             const marker = this.state.hasLocation && this.props.gps
                 ? (
-                    <leaflet.Marker position={this.state.position} icon={this.positionMarker} ref={this.state.onChangeCurrPosition} />
+                    <leaflet.Marker position={this.state.position} icon={this.positionMarker} ref={this.state.onChangeCurrPosition}>
+                        <leaflet.Popup>
+                            <span>
+                                {this.state.positionInfo}
+                            </span>
+                        </leaflet.Popup>
+                    </leaflet.Marker>
                 )
                 : null;
             //return the map without any layers shown
@@ -287,7 +246,7 @@ class Map extends React.Component {
                     zoomControl={this.props.zoomable}
                     scrollWheelZoom={this.props.zoomable}
                     zoomDelta={this.props.zoomable == false ? 0 : 1}
-                    ref={this.state.onChangeZoomLevel}>
+                    ref={(ref) => {this.map = ref;}}>
                     <OfflineLayer.OfflineLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
