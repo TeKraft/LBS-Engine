@@ -90790,12 +90790,16 @@ class Map extends React.Component {
         that.watchID = navigator.geolocation.watchPosition(function success(position) {
             var zoomLvl = that.map.leafletElement.getZoom();
             var msg = `zoom: ${zoomLvl}, lat: ${position.coords.latitude}, lng: ${position.coords.longitude} .`;
+            var curPos = [position.coords.latitude, position.coords.longitude];
             if (that.props.gps) {
                 that.setState({
-                    position: [position.coords.latitude, position.coords.longitude],
+                    position: curPos,
                     positionInfo: msg,
                     zoom: zoomLvl
                 });
+
+                var dist = that.calcDistance(curPos, config.map.center);
+                console.log(dist);
             }
             console.log(`GPS location set - ${msg}`);
         }, function error(err) {
@@ -90807,6 +90811,23 @@ class Map extends React.Component {
 
     componentWillUnmount() {
         navigator.geolocation.clearWatch(this.watchId);
+    }
+
+    /**
+     * Calculate the distance in km of two provided points
+     * @param {Array} latlng1 first point - [latitude, longitude]
+     * @param {Array} latlng2 second point - [latitude, longitude]
+     */
+    calcDistance(latlng1, latlng2) {
+        // Deg --> Rad
+        var lat1 = latlng1[0] * Math.PI / 180;
+        var lat2 = latlng2[0] * Math.PI / 180;
+        var lng1 = latlng1[1] * Math.PI / 180;
+        var lng2 = latlng2[1] * Math.PI / 180;
+        // distance calculation:
+        var cosG = Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1);
+        var dist = 6378.388 * Math.acos(cosG);
+        return dist;
     }
 
     /**
