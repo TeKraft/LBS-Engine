@@ -90496,6 +90496,16 @@ class App extends React.Component {
             null,
             React.createElement(
                 'div',
+                { className: 'left' },
+                React.createElement(
+                    'button',
+                    { id: 'startGame', click: 'startGame()', type: 'button' },
+                    'Play'
+                )
+            ),
+            ',',
+            React.createElement(
+                'div',
                 { className: 'center' },
                 titles[this.state.index]
             ),
@@ -90842,9 +90852,16 @@ class Map extends React.Component {
                     positionInfo: msg,
                     zoom: zoomLvl
                 });
-
-                var dist = that.calcDistance(curPos, config.map.center);
-                console.log(dist);
+                var spotsInRange = [];
+                var spots = layers['T-spots'].items;
+                for (let i in spots) {
+                    var dist = that.calcDistance(curPos, spots[i].coords);
+                    if (dist <= 0.2) {
+                        // console.log(dist + ' - in Range with - ' + spots[i].name);
+                        spotsInRange.push(spots[i].name);
+                    }
+                }
+                console.log(spotsInRange);
             }
             console.log(`GPS location set - ${msg}`);
         }, function error(err) {

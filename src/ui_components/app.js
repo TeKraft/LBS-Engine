@@ -110,6 +110,7 @@ class App extends React.Component {
         const titles = ['About', 'Map', 'Streetview', 'Settings', 'Help'];
         return (
             <Ons.Toolbar>
+                <div className='left'><button id="startGame" click="startGame()" type="button">Play</button></div>,
                 <div className='center'>{titles[this.state.index]}</div>
                 <div className='right'>
                     <Ons.ToolbarButton onClick={this.show}>

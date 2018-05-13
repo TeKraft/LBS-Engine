@@ -72,9 +72,16 @@ class Map extends React.Component {
                     positionInfo: msg,
                     zoom: zoomLvl
                 });
-
-                var dist = that.calcDistance( curPos, config.map.center );
-                console.log(dist);
+                var spotsInRange = [];
+                var spots = layers['T-spots'].items;
+                for (let i in spots) {
+                        var dist = that.calcDistance( curPos, spots[i].coords );
+                        if (dist <= 0.2) {
+                            // console.log(dist + ' - in Range with - ' + spots[i].name);
+                            spotsInRange.push(spots[i].name);
+                        }
+                }
+                console.log(spotsInRange);
             }
             console.log(`GPS location set - ${msg}`);
         }, function error(err) {
@@ -259,28 +266,28 @@ class Map extends React.Component {
                 : null;
             //return the map without any layers shown
             return (
-                <leaflet.Map 
-                    center={this.state.position}
-                    onClick={this.addMarker}
-                    zoom={this.state.zoom}
-                    dragging={this.props.draggable}
-                    zoomControl={this.props.zoomable}
-                    scrollWheelZoom={this.props.zoomable}
-                    zoomDelta={this.props.zoomable == false ? 0 : 1}
-                    ref={(ref) => {this.map = ref;}}>
-                    <OfflineLayer.OfflineLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                    />
-                    <OfflineLayer.OfflineControl />
-                    {this.state.markers.map((position, idx) => 
-                        <leaflet.Marker key={`marker-${idx}`} position={position}>
-                        <leaflet.Popup>
-                            <span>A pretty CSS3 popup. <br/> Easily customizable.</span>
-                        </leaflet.Popup>
-                        </leaflet.Marker>
-                        )}
-                </leaflet.Map>
+                    <leaflet.Map 
+                        center={this.state.position}
+                        onClick={this.addMarker}
+                        zoom={this.state.zoom}
+                        dragging={this.props.draggable}
+                        zoomControl={this.props.zoomable}
+                        scrollWheelZoom={this.props.zoomable}
+                        zoomDelta={this.props.zoomable == false ? 0 : 1}
+                        ref={(ref) => {this.map = ref;}}>
+                        <OfflineLayer.OfflineLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                        />
+                        <OfflineLayer.OfflineControl />
+                        {this.state.markers.map((position, idx) => 
+                            <leaflet.Marker key={`marker-${idx}`} position={position}>
+                            <leaflet.Popup>
+                                <span>A pretty CSS3 popup. <br/> Easily customizable.</span>
+                            </leaflet.Popup>
+                            </leaflet.Marker>
+                            )}
+                    </leaflet.Map>
             )
         }
     }
