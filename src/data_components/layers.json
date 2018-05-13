@@ -8,7 +8,59 @@
                     7.610546
                 ],
                 "name": "Botanical Garden",
-                "popup": "Botanical Garden"
+                "popup": "Botanical Garden",
+                "qset": [
+                  {
+                      "Question":"When was the botanical garden built?",
+                      "Options":[
+                        {"A":"1800"},
+                        {"B":"1813"},
+                        {"C":"1803"},
+                        {"D":"1795"}
+                      ],
+                      "Answer":"C"
+                    },
+                    {
+                      "Question":"In 1990's what feature was added to the garden?",
+                      "Options":[
+                        {"A":"Stream"},
+                        {"B":"Pond"},
+                        {"C":"Medicinal greenhouse"},
+                        {"D":"Nothing"}
+                      ],
+                      "Answer":"A"
+                    },
+                    {
+                      "Question":"How many of the 280 known Pelargonium species are present in the garden?",
+                      "Options":[
+                        {"A":"15"},
+                        {"B":"230"},
+                        {"C":"275"},
+                        {"D":"140"}
+                      ],
+                      "Answer":"B"
+                    },
+                    {
+                      "Question":"The Bromeliad house contains pineapple plants from which part of the world?",
+                      "Options":[
+                        {"A":"Nordic region"},
+                        {"B":"Central Africa"},
+                        {"C":"South-east Asia"},
+                        {"D":"South and Central America"}
+                      ],
+                      "Answer":"D"
+                    },
+                    {
+                      "Question":"What is the spaciality of the Farntal area?",
+                      "Options":[
+                        {"A":"Mountain plants"},
+                        {"B":"Rock roses and olive"},
+                        {"C":"Plants from grasslands"},
+                        {"D":"Ferns"}
+                      ],
+                      "Answer":"D"
+                    }
+                ]
             },
             {
                 "coords": [
@@ -16,7 +68,59 @@
                     7.629437
                 ],
                 "name": "St. Lamberti Church",
-                "popup": "St. Lamberti Church"
+                "popup": "St. Lamberti Church",
+                "qset":[
+                  {
+                      "Question":"When was the Church built?",
+                      "Options":[
+                        {"A":"1275"},
+                        {"B":"1375"},
+                        {"C":"1475"},
+                        {"D":"1575"}
+                      ],
+                      "Answer":"B"
+                      },
+                      {
+                      "Question":"Who financed the building of Church?",
+                      "Options":[
+                        {"A":"Merchents of the city"},
+                        {"B":"Duke of Paris"},
+                        {"C":"Vatican"},
+                        {"D":"Governer of Muensterland"}
+                      ],
+                      "Answer":"A"
+                      },
+                      {
+                      "Question":"What hangs at the tower of the church?",
+                      "Options":[
+                        {"A":"3 wooden buckets"},
+                        {"B":"3 cooper swords"},
+                        {"C":"3 iron baskets"},
+                        {"D":"3 cooper bells"}
+                      ],
+                      "Answer":"C"
+                      },
+                      {
+                      "Question":"Who's representation lies on the west facade of the church?",
+                      "Options":[
+                        {"A":"Bernhard Knipperdolling"},
+                        {"B":"Johann Wolfgang von Goethe"},
+                        {"C":"Jan van Leiden"},
+                        {"D":"Friedrich Schiller"}
+                      ],
+                      "Answer":"B"
+                      },
+                      {
+                      "Question":"What landmark is to the east of church?",
+                      "Options":[
+                        {"A":"Domplatz"},
+                        {"B":"Lambertikirchplatz"},
+                        {"C":"Rye market"},
+                        {"D":"Old fish market"}
+                      ],
+                      "Answer":"D"
+                      }
+                ]
             },
             {
                 "coords": [
@@ -24,7 +128,59 @@
                     7.587544
                 ],
                 "name": "All-weather Zoo",
-                "popup": "All-weather Zoo"
+                "popup": "All-weather Zoo",
+                "qset":[
+                  {
+                      "Question":"When was the current All-weather zoo built?",
+                      "Options":[
+                        {"A":"1972"},
+                        {"B":"1973"},
+                        {"C":"1974"},
+                        {"D":"1975"}
+                      ],
+                      "Answer":"C"
+                      },
+                      {
+                      "Question":"Who is the current zoo director?",
+                      "Options":[
+                        {"A":"H. Jörg Adler"},
+                        {"B":"Helmut Reichling"},
+                        {"C":"Hermann Landois"},
+                        {"D":"Thomas Wilms"}
+                      ],
+                      "Answer":"D"
+                      },
+                      {
+                      "Question":"What category of animals share the joint top count with Fish as of start of 2016?",
+                      "Options":[
+                        {"A":"Invertebrates"},
+                        {"B":"Amphibia"},
+                        {"C":"Birds"},
+                        {"D":"Reptilies"}
+                      ],
+                      "Answer":"A"
+                      },
+                      {
+                      "Question":"What is major attraction at the Robben Haven show?",
+                      "Options":[
+                        {"A":"California Sea Lions"},
+                        {"B":"Westphalian Horses"},
+                        {"C":"Asian Elephants"},
+                        {"D":"Penguin"}
+                      ],
+                      "Answer":"A"
+                      },
+                      {
+                      "Question":"What are Lories?",
+                      "Options":[
+                        {"A":"Penguin"},
+                        {"B":"Elephants"},
+                        {"C":"Vultures"},
+                        {"D":"Parrots"}
+                      ],
+                      "Answer":"D"
+                      }
+                ]
             },
             {
                 "coords": [
@@ -32,160 +188,48 @@
                     7.624331
                 ],
                 "name": "LWL Cultural Museum",
-                "popup": "LWL Cultural Museum"
+                "popup": "LWL Cultural Museum",
+                "qset": [
+                  {}
+                ]
             }
         ]
     },
     "T-Zones": {
-        "type":"marker",
+        "type":"zone",
         "items":[
             {
-                "coords":[
+                "center":[
                     51.963886,
                     7.610546
                 ],
-                "radius":100,
+                "radius":200,
                 "name": "Botanical Garden zone"
+            },
+            {
+                "center":[
+                  51.962900,
+                  7.629437
+                ],
+                "radius":200,
+                "name": "St. Lamberti Church"
+            },
+            {
+                "center":[
+                  51.948110,
+                  7.587544
+                ],
+                "radius":200,
+                "name": "All-weather Zoo"
+            },
+            {
+                "center":[
+                  51.960801,
+                  7.624331
+                ],
+                "radius":200,
+                "name": "LWL Cultural Museum"
             }
         ]
-
-    },
-    "Route1": {
-        "type": "route",
-        "name": "Route1",
-        "coords": [
-            [
-              51.958739608291516,
-              7.575244903564453
-            ],
-            [
-              51.958673494066595,
-              7.5753092765808105
-            ],
-            [
-              51.95784044647882,
-              7.573227882385254
-            ],
-            [
-              51.95762887637262,
-              7.572659254074096
-            ],
-            [
-              51.95925529589955,
-              7.570298910140991
-            ],
-            [
-              51.95937429988976,
-              7.570277452468871
-            ],
-            [
-              51.95945363570772,
-              7.570052146911621
-            ],
-            [
-              51.96032632043889,
-              7.568904161453247
-            ],
-            [
-              51.96071637857509,
-              7.568539381027222
-            ],
-            [
-              51.96125848763637,
-              7.56784200668335
-            ],
-            [
-              51.9613774863089,
-              7.56782054901123
-            ],
-            [
-              51.961483262641515,
-              7.567723989486694
-            ],
-            [
-              51.96149648466555,
-              7.567455768585205
-            ],
-            [
-              51.961992307751274,
-              7.566790580749511
-            ],
-            [
-              51.962217079076794,
-              7.566661834716796
-            ],
-            [
-              51.962422016656014,
-              7.566618919372558
-            ],
-            [
-              51.96264678582683,
-              7.566618919372558
-            ],
-            [
-              51.96281866737342,
-              7.566661834716796
-            ],
-            [
-              51.96318887154293,
-              7.56684422492981
-            ],
-            [
-              51.963526019108514,
-              7.567026615142821
-            ],
-            [
-              51.96381027881101,
-              7.567155361175536
-            ],
-            [
-              51.96413420046047,
-              7.5672197341918945
-            ],
-            [
-              51.964464730342776,
-              7.567166090011598
-            ],
-            [
-              51.96474237356026,
-              7.566962242126465
-            ],
-            [
-              51.965416642785485,
-              7.566061019897461
-            ],
-            [
-              51.96603140882682,
-              7.565277814865112
-            ],
-            [
-              51.96649413039257,
-              7.564655542373656
-            ],
-            [
-              51.9669535420781,
-              7.564006447792053
-            ],
-            [
-              51.96703616957945,
-              7.563883066177368
-            ],
-            [
-              51.966956847181095,
-              7.563748955726623
-            ],
-            [
-              51.966890745075204,
-              7.563834786415101
-            ],
-            [
-              51.96683786332031,
-              7.5638991594314575
-            ],
-            [
-              51.96675523545338,
-              7.563765048980713
-            ]
-          ]
     }
 }
