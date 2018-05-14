@@ -34,6 +34,7 @@ class App extends React.Component {
         this.handleLayerControlChange = this.handleLayerControlChange.bind(this);
         this.handleZoomMapChange = this.handleZoomMapChange.bind(this);
         this.handleDragMapChange = this.handleDragMapChange.bind(this);
+        this.handleGameModeChange = this.handleGameModeChange.bind(this);
         this.handleClickAbout = this.handleClickAbout.bind(this);
         this.handleClickSettings = this.handleClickSettings.bind(this);
         this.handleClickHelp = this.handleClickHelp.bind(this);
@@ -48,6 +49,7 @@ class App extends React.Component {
             layerControl: config.app.layerControl,
             zoomable: config.map.draggable,
             draggable: config.map.zoomable,
+            gamemode: config.map.gamemode,
             index: 0
         };
     }
@@ -104,13 +106,22 @@ class App extends React.Component {
         this.setState({zoomable: bool});
     }
 
+    handleGameModeChange(bool) {
+        console.log('handleGameModeChange() - ' + bool);
+        this.setState({gamemode: bool});
+    }
+
+    startGame() {
+        alert('Starting Game');
+    }
+
 
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
         const titles = ['About', 'Map', 'Streetview', 'Settings', 'Help'];
         return (
             <Ons.Toolbar>
-                <div className='left'><button id="startGame" click="startGame()" type="button">Play</button></div>,
+                <div className='left'><button id="startGame" onClick={this.startGame} type="button">Play</button></div>,
                 <div className='center'>{titles[this.state.index]}</div>
                 <div className='right'>
                     <Ons.ToolbarButton onClick={this.show}>
@@ -160,12 +171,14 @@ class App extends React.Component {
             //map element
             {
                 content: <map.Map 
+                                onGameModeChange={this.handleGameModeChange}
                                 logging={this.state.logging} 
                                 externalData={this.state.externalData} 
                                 gps={this.state.gps} 
                                 layerControl={this.state.layerControl}
                                 draggable={this.state.draggable}  
-                                zoomable={this.state.zoomable} 
+                                zoomable={this.state.zoomable}
+                                gamemode={this.state.gamemode}
                                 key='map' />,
                 tab: <Ons.Tab label='Map' icon='md-map' key='map' />
             },

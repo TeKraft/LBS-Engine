@@ -18,6 +18,7 @@ class Map extends React.Component {
         this.renderMapWithLayers = this.renderMapWithLayers.bind(this);
         this.handleOverlayadd = this.handleOverlayadd.bind(this);
         this.handleOverlayremove = this.handleOverlayremove.bind(this);
+        this.handleChangeGameMode = this.handleChangeGameMode.bind(this);
         //get the settings from the config file
         this.state = {
             position: config.map.center,
@@ -82,6 +83,13 @@ class Map extends React.Component {
                         }
                 }
                 console.log(spotsInRange);
+                if (spotsInRange.length > 0) {
+                    console.log('spotsInRange - true');
+                    that.handleChangeGameMode(true);
+                } else {
+                    console.log('spotsInRange - false');
+                    that.handleChangeGameMode(false);
+                }
             }
             console.log(`GPS location set - ${msg}`);
         }, function error(err) {
@@ -158,6 +166,13 @@ class Map extends React.Component {
     handleOverlayremove(e) {
         
         this.createLog(false, e.name);
+    }
+
+    handleChangeGameMode(bool) {
+        console.log(this);
+        console.log(this.props);
+        this.props.onGameModeChange(bool);
+        this.createLog('GameMode', bool);
     }
 
     //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
@@ -268,7 +283,6 @@ class Map extends React.Component {
             return (
                     <leaflet.Map 
                         center={this.state.position}
-                        onClick={this.addMarker}
                         zoom={this.state.zoom}
                         dragging={this.props.draggable}
                         zoomControl={this.props.zoomable}

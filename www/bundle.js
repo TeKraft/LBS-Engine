@@ -90129,7 +90129,8 @@ module.exports={
         "center": [51.9692495, 7.596022],
         "zoomable": true,
         "draggable": true,
-        "zoom": 20
+        "zoom": 20,
+        "gamemode": false
     }
 }
 },{}],261:[function(require,module,exports){
@@ -90418,6 +90419,7 @@ class App extends React.Component {
         this.handleLayerControlChange = this.handleLayerControlChange.bind(this);
         this.handleZoomMapChange = this.handleZoomMapChange.bind(this);
         this.handleDragMapChange = this.handleDragMapChange.bind(this);
+        this.handleGameModeChange = this.handleGameModeChange.bind(this);
         this.handleClickAbout = this.handleClickAbout.bind(this);
         this.handleClickSettings = this.handleClickSettings.bind(this);
         this.handleClickHelp = this.handleClickHelp.bind(this);
@@ -90432,6 +90434,7 @@ class App extends React.Component {
             layerControl: config.app.layerControl,
             zoomable: config.map.draggable,
             draggable: config.map.zoomable,
+            gamemode: config.map.gamemode,
             index: 0
         };
     }
@@ -90488,6 +90491,15 @@ class App extends React.Component {
         this.setState({ zoomable: bool });
     }
 
+    handleGameModeChange(bool) {
+        console.log('handleGameModeChange() - ' + bool);
+        this.setState({ gamemode: bool });
+    }
+
+    startGame() {
+        alert('Starting Game');
+    }
+
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
         const titles = ['About', 'Map', 'Streetview', 'Settings', 'Help'];
@@ -90499,7 +90511,7 @@ class App extends React.Component {
                 { className: 'left' },
                 React.createElement(
                     'button',
-                    { id: 'startGame', click: 'startGame()', type: 'button' },
+                    { id: 'startGame', onClick: this.startGame, type: 'button' },
                     'Play'
                 )
             ),
@@ -90560,12 +90572,14 @@ class App extends React.Component {
         //map element
         {
             content: React.createElement(map.Map, {
+                onGameModeChange: this.handleGameModeChange,
                 logging: this.state.logging,
                 externalData: this.state.externalData,
                 gps: this.state.gps,
                 layerControl: this.state.layerControl,
                 draggable: this.state.draggable,
                 zoomable: this.state.zoomable,
+                gamemode: this.state.gamemode,
                 key: 'map' }),
             tab: React.createElement(Ons.Tab, { label: 'Map', icon: 'md-map', key: 'map' })
         },
@@ -90799,6 +90813,7 @@ class Map extends React.Component {
         this.renderMapWithLayers = this.renderMapWithLayers.bind(this);
         this.handleOverlayadd = this.handleOverlayadd.bind(this);
         this.handleOverlayremove = this.handleOverlayremove.bind(this);
+        this.handleChangeGameMode = this.handleChangeGameMode.bind(this);
         //get the settings from the config file
         this.state = {
             position: config.map.center,
@@ -90862,6 +90877,13 @@ class Map extends React.Component {
                     }
                 }
                 console.log(spotsInRange);
+                if (spotsInRange.length > 0) {
+                    console.log('spotsInRange - true');
+                    that.handleChangeGameMode(true);
+                } else {
+                    console.log('spotsInRange - false');
+                    that.handleChangeGameMode(false);
+                }
             }
             console.log(`GPS location set - ${msg}`);
         }, function error(err) {
@@ -90936,6 +90958,13 @@ class Map extends React.Component {
     handleOverlayremove(e) {
 
         this.createLog(false, e.name);
+    }
+
+    handleChangeGameMode(bool) {
+        console.log(this);
+        console.log(this.props);
+        this.props.onGameModeChange(bool);
+        this.createLog('GameMode', bool);
     }
 
     //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
@@ -91062,7 +91091,6 @@ class Map extends React.Component {
                 leaflet.Map,
                 {
                     center: this.state.position,
-                    onClick: this.addMarker,
                     zoom: this.state.zoom,
                     dragging: this.props.draggable,
                     zoomControl: this.props.zoomable,

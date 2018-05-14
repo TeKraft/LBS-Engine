@@ -10,6 +10,7 @@
         "center": [51.9692495, 7.596022],
         "zoomable": true,
         "draggable": true,
-        "zoom": 20
+        "zoom": 20,
+        "gamemode": false
     }
 }
