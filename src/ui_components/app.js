@@ -107,29 +107,36 @@ class App extends React.Component {
     }
 
     handleGameModeChange(bool) {
-        console.log('handleGameModeChange() - ' + bool);
         this.setState({gamemode: bool});
     }
-
-    startGame() {
-        alert('Starting Game');
-    }
-
 
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
         const titles = ['About', 'Map', 'Streetview', 'Settings', 'Help'];
-        return (
-            <Ons.Toolbar>
-                <div className='left'><button id="startGame" onClick={this.startGame} type="button">Play</button></div>,
-                <div className='center'>{titles[this.state.index]}</div>
-                <div className='right'>
-                    <Ons.ToolbarButton onClick={this.show}>
-                        <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
-                    </Ons.ToolbarButton>
-                </div>
-            </Ons.Toolbar>
-        )
+        if (this.state.gamemode === true) {
+            return (
+                <Ons.Toolbar>
+                    <div className='left'><button id="startGame" onClick={() => { this.startGamingMode.handleStartGame(); }} type="button">Play</button></div>,
+                    <div className='center'>{titles[this.state.index]}</div>
+                    <div className='right'>
+                        <Ons.ToolbarButton onClick={this.show}>
+                            <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
+                        </Ons.ToolbarButton>
+                    </div>
+                </Ons.Toolbar>
+            )
+        } else {
+            return (
+                <Ons.Toolbar>
+                    <div className='center'>{titles[this.state.index]}</div>
+                    <div className='right'>
+                        <Ons.ToolbarButton onClick={this.show}>
+                            <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
+                        </Ons.ToolbarButton>
+                    </div>
+                </Ons.Toolbar>
+            )
+        }
     }
 
     //hide sidebar
@@ -172,6 +179,7 @@ class App extends React.Component {
             {
                 content: <map.Map 
                                 onGameModeChange={this.handleGameModeChange}
+                                ref={instance => {this.startGamingMode = instance; }}
                                 logging={this.state.logging} 
                                 externalData={this.state.externalData} 
                                 gps={this.state.gps} 

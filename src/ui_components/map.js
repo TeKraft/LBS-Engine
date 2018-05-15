@@ -78,16 +78,12 @@ class Map extends React.Component {
                 for (let i in spots) {
                         var dist = that.calcDistance( curPos, spots[i].coords );
                         if (dist <= 0.2) {
-                            // console.log(dist + ' - in Range with - ' + spots[i].name);
                             spotsInRange.push(spots[i].name);
                         }
                 }
-                console.log(spotsInRange);
                 if (spotsInRange.length > 0) {
-                    console.log('spotsInRange - true');
                     that.handleChangeGameMode(true);
                 } else {
-                    console.log('spotsInRange - false');
                     that.handleChangeGameMode(false);
                 }
             }
@@ -168,11 +164,22 @@ class Map extends React.Component {
         this.createLog(false, e.name);
     }
 
+    /**
+     * Handle the (de-)activation of game mode. Change visibility of the play button
+     * @param {boolean} bool boolean set to true if game mode is possible (because user is in range of a spot)
+     */
     handleChangeGameMode(bool) {
-        console.log(this);
-        console.log(this.props);
-        this.props.onGameModeChange(bool);
+        try {
+            this.props.onGameModeChange(bool);
+        } catch(e) {
+            console.log('Error:\n' + e);
+        }
         this.createLog('GameMode', bool);
+    }
+
+    handleStartGame() {
+        console.log(this.spotsInRange);
+        alert('Starting Game');
     }
 
     //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
@@ -201,7 +208,6 @@ class Map extends React.Component {
             //Akhil:else it is a zone
             else if (layers[layer].type == 'zone'){
                 for (var i = 0; i < layers[layer].items.length; i++) {
-                    console.log('Printing the zonal circles');
                     layerElement.push(<leaflet.Circle center={layers[layer].items[i].center} color={layers[layer].items[i].color} radius={layers[layer].items[i].radius}
                                         key={layers[layer].items[i].name} />)
                 }
@@ -266,7 +272,6 @@ class Map extends React.Component {
             return this.renderMapWithLayers()
         }
         else {
-            console.log(this.state.positionInfo);
             // check if the location is enabled and available
             const marker = this.state.hasLocation && this.props.gps
                 ? (

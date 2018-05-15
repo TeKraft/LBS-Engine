@@ -90492,45 +90492,63 @@ class App extends React.Component {
     }
 
     handleGameModeChange(bool) {
-        console.log('handleGameModeChange() - ' + bool);
         this.setState({ gamemode: bool });
-    }
-
-    startGame() {
-        alert('Starting Game');
     }
 
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
         const titles = ['About', 'Map', 'Streetview', 'Settings', 'Help'];
-        return React.createElement(
-            Ons.Toolbar,
-            null,
-            React.createElement(
-                'div',
-                { className: 'left' },
+        if (this.state.gamemode === true) {
+            return React.createElement(
+                Ons.Toolbar,
+                null,
                 React.createElement(
-                    'button',
-                    { id: 'startGame', onClick: this.startGame, type: 'button' },
-                    'Play'
-                )
-            ),
-            ',',
-            React.createElement(
-                'div',
-                { className: 'center' },
-                titles[this.state.index]
-            ),
-            React.createElement(
-                'div',
-                { className: 'right' },
+                    'div',
+                    { className: 'left' },
+                    React.createElement(
+                        'button',
+                        { id: 'startGame', onClick: () => {
+                                this.startGamingMode.handleStartGame();
+                            }, type: 'button' },
+                        'Play'
+                    )
+                ),
+                ',',
                 React.createElement(
-                    Ons.ToolbarButton,
-                    { onClick: this.show },
-                    React.createElement(Ons.Icon, { icon: 'ion-navicon, material:md-menu' })
+                    'div',
+                    { className: 'center' },
+                    titles[this.state.index]
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'right' },
+                    React.createElement(
+                        Ons.ToolbarButton,
+                        { onClick: this.show },
+                        React.createElement(Ons.Icon, { icon: 'ion-navicon, material:md-menu' })
+                    )
                 )
-            )
-        );
+            );
+        } else {
+            return React.createElement(
+                Ons.Toolbar,
+                null,
+                React.createElement(
+                    'div',
+                    { className: 'center' },
+                    titles[this.state.index]
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'right' },
+                    React.createElement(
+                        Ons.ToolbarButton,
+                        { onClick: this.show },
+                        React.createElement(Ons.Icon, { icon: 'ion-navicon, material:md-menu' })
+                    )
+                )
+            );
+        }
     }
 
     //hide sidebar
@@ -90573,6 +90591,9 @@ class App extends React.Component {
         {
             content: React.createElement(map.Map, {
                 onGameModeChange: this.handleGameModeChange,
+                ref: instance => {
+                    this.startGamingMode = instance;
+                },
                 logging: this.state.logging,
                 externalData: this.state.externalData,
                 gps: this.state.gps,
@@ -90872,16 +90893,12 @@ class Map extends React.Component {
                 for (let i in spots) {
                     var dist = that.calcDistance(curPos, spots[i].coords);
                     if (dist <= 0.2) {
-                        // console.log(dist + ' - in Range with - ' + spots[i].name);
                         spotsInRange.push(spots[i].name);
                     }
                 }
-                console.log(spotsInRange);
                 if (spotsInRange.length > 0) {
-                    console.log('spotsInRange - true');
                     that.handleChangeGameMode(true);
                 } else {
-                    console.log('spotsInRange - false');
                     that.handleChangeGameMode(false);
                 }
             }
@@ -90960,11 +90977,22 @@ class Map extends React.Component {
         this.createLog(false, e.name);
     }
 
+    /**
+     * Handle the (de-)activation of game mode. Change visibility of the play button
+     * @param {boolean} bool boolean set to true if game mode is possible (because user is in range of a spot)
+     */
     handleChangeGameMode(bool) {
-        console.log(this);
-        console.log(this.props);
-        this.props.onGameModeChange(bool);
+        try {
+            this.props.onGameModeChange(bool);
+        } catch (e) {
+            console.log('Error:\n' + e);
+        }
         this.createLog('GameMode', bool);
+    }
+
+    handleStartGame() {
+        console.log(this.spotsInRange);
+        alert('Starting Game');
     }
 
     //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
@@ -90998,7 +91026,6 @@ class Map extends React.Component {
             //Akhil:else it is a zone
             else if (layers[layer].type == 'zone') {
                     for (var i = 0; i < layers[layer].items.length; i++) {
-                        console.log('Printing the zonal circles');
                         layerElement.push(React.createElement(leaflet.Circle, { center: layers[layer].items[i].center, color: layers[layer].items[i].color, radius: layers[layer].items[i].radius,
                             key: layers[layer].items[i].name }));
                     }
@@ -91071,7 +91098,6 @@ class Map extends React.Component {
         if (this.props.layerControl) {
             return this.renderMapWithLayers();
         } else {
-            console.log(this.state.positionInfo);
             // check if the location is enabled and available
             const marker = this.state.hasLocation && this.props.gps ? React.createElement(
                 leaflet.Marker,
