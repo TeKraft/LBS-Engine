@@ -5,6 +5,8 @@ const leaflet = require('react-leaflet');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+//ui
+const prompt = require('./prompt.js');
 //logic
 const locationManager = require('../business_components/locationManager.js');
 const logger = require('../business_components/logger.js');
@@ -24,6 +26,7 @@ class Map extends React.Component {
             position: config.map.center,
             zoom: config.map.zoom,
             hasLocation: false,
+            showPopup: false,
             positionInfo: 'Enable GPS to see your location.' // set to default, because if the GPS location is disabled there won't be data to show
         }
         //marker symbol for the "you are here" marker
@@ -64,7 +67,11 @@ class Map extends React.Component {
 
         // Update location and keep current zoom level as soon as movement begins. Distancefilter is set to 1 meter
         that.watchID = navigator.geolocation.watchPosition(function success(position) {
-            var zoomLvl = that.map.leafletElement.getZoom();
+            if (that.map) {
+                var zoomLvl = that.map.leafletElement.getZoom();
+            } else {
+                var zoomLvl = config.map.zoom;
+            }
             var msg = `zoom: ${zoomLvl}, lat: ${position.coords.latitude}, lng: ${position.coords.longitude} .`
             var curPos = [position.coords.latitude, position.coords.longitude];
             if(that.props.gps) {
@@ -178,8 +185,13 @@ class Map extends React.Component {
     }
 
     handleStartGame() {
-        console.log(this.spotsInRange);
-        alert('Starting Game');
+        // this.spotsInrange.push('Botanical Garden');
+        // console.log(this.spotsInRange);
+        // alert('Starting Game');
+        this.setState({
+            showPopup: true
+        })
+        // this.renderPopup();
     }
 
     //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
@@ -228,6 +240,14 @@ class Map extends React.Component {
         return mapLayers;
     }
 
+    closeMe() {
+        var that = this;
+        console.log(that);
+        that.setState({
+            showPopup: !that.state.showPopup
+          });
+    }
+
     renderMapWithLayers() {
         // check if the location is enabled and available
         const marker = this.state.hasLocation && this.props.gps
@@ -267,6 +287,18 @@ class Map extends React.Component {
 
     //render the map with the layerControl
     render() {
+        console.log(this);
+        if (this.state.showPopup === true) {
+            return (
+                <div className='popup'>
+                <div className='popup_inner'>
+                <h1>hello its me and i </h1>
+                <button onClick={this.closeMe}>close me</button>
+                </div>
+            </div>
+            );
+            
+        } else {
         //if the layerControl is active, the map is rendered with the layercontrol
         if (this.props.layerControl) {
             return this.renderMapWithLayers()
@@ -309,6 +341,7 @@ class Map extends React.Component {
                     </leaflet.Map>
             )
         }
+    }
     }
 }
 
