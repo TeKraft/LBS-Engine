@@ -21,12 +21,14 @@ class Map extends React.Component {
         this.handleOverlayadd = this.handleOverlayadd.bind(this);
         this.handleOverlayremove = this.handleOverlayremove.bind(this);
         this.handleChangeGameMode = this.handleChangeGameMode.bind(this);
+        this.handleEndGame = this.handleEndGame.bind(this);
         //get the settings from the config file
         this.state = {
             position: config.map.center,
             zoom: config.map.zoom,
             hasLocation: false,
             showPopup: false,
+            spotsInRange: [],
             positionInfo: 'Enable GPS to see your location.' // set to default, because if the GPS location is disabled there won't be data to show
         }
         //marker symbol for the "you are here" marker
@@ -37,7 +39,6 @@ class Map extends React.Component {
             popupAnchor: [-3, -76]
         });
         //code added:Akhil - different icon for marker
-        console.log('printing the koffer');
         this.tSpotMarker = L.icon({
             iconUrl: 'img/koffer.png',
             iconSize: [50, 50],
@@ -88,6 +89,7 @@ class Map extends React.Component {
                             spotsInRange.push(spots[i].name);
                         }
                 }
+                that.setState({spotsInRange: spotsInRange})
                 if (spotsInRange.length > 0) {
                     that.handleChangeGameMode(true);
                 } else {
@@ -185,13 +187,11 @@ class Map extends React.Component {
     }
 
     handleStartGame() {
-        // this.spotsInrange.push('Botanical Garden');
-        // console.log(this.spotsInRange);
-        // alert('Starting Game');
-        this.setState({
-            showPopup: true
-        })
-        // this.renderPopup();
+        this.setState({showPopup: true});
+    }
+
+    handleEndGame(bool) {
+        this.setState({showPopup: false});
     }
 
     //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
@@ -240,14 +240,6 @@ class Map extends React.Component {
         return mapLayers;
     }
 
-    closeMe() {
-        var that = this;
-        console.log(that);
-        that.setState({
-            showPopup: !that.state.showPopup
-          });
-    }
-
     renderMapWithLayers() {
         // check if the location is enabled and available
         const marker = this.state.hasLocation && this.props.gps
@@ -287,61 +279,59 @@ class Map extends React.Component {
 
     //render the map with the layerControl
     render() {
-        console.log(this);
         if (this.state.showPopup === true) {
             return (
-                <div className='popup'>
-                <div className='popup_inner'>
-                <h1>hello its me and i </h1>
-                <button onClick={this.closeMe}>close me</button>
-                </div>
-            </div>
-            );
-            
-        } else {
-        //if the layerControl is active, the map is rendered with the layercontrol
-        if (this.props.layerControl) {
-            return this.renderMapWithLayers()
-        }
-        else {
-            // check if the location is enabled and available
-            const marker = this.state.hasLocation && this.props.gps
-                ? (
-                    <leaflet.Marker position={this.state.position} icon={this.positionMarker} ref={this.state.onChangeCurrPosition}>
-                        <leaflet.Popup>
-                            <span>
-                                {this.state.positionInfo}
-                            </span>
-                        </leaflet.Popup>
-                    </leaflet.Marker>
-                )
-                : null;
-            //return the map without any layers shown
-            return (
-                    <leaflet.Map 
-                        center={this.state.position}
-                        zoom={this.state.zoom}
-                        dragging={this.props.draggable}
-                        zoomControl={this.props.zoomable}
-                        scrollWheelZoom={this.props.zoomable}
-                        zoomDelta={this.props.zoomable == false ? 0 : 1}
-                        ref={(ref) => {this.map = ref;}}>
-                        <OfflineLayer.OfflineLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                        />
-                        <OfflineLayer.OfflineControl />
-                        {this.state.markers.map((position, idx) => 
-                            <leaflet.Marker key={`marker-${idx}`} position={position}>
-                            <leaflet.Popup>
-                                <span>A pretty CSS3 popup. <br/> Easily customizable.</span>
-                            </leaflet.Popup>
-                            </leaflet.Marker>
-                            )}
-                    </leaflet.Map>
+                <prompt.Prompt
+                    gps={this.state.position}
+                    spots={this.state.spotsInRange}
+                    onEndGameChange={this.handleEndGame}
+                >
+                </prompt.Prompt>
             )
+        } else {
+            //if the layerControl is active, the map is rendered with the layercontrol
+            if (this.props.layerControl) {
+                return this.renderMapWithLayers()
+            }
+            else {
+                // check if the location is enabled and available
+                const marker = this.state.hasLocation && this.props.gps
+                    ? (
+                        <leaflet.Marker position={this.state.position} icon={this.positionMarker} ref={this.state.onChangeCurrPosition}>
+                            <leaflet.Popup>
+                                <span>
+                                    {this.state.positionInfo}
+                                </span>
+                            </leaflet.Popup>
+                        </leaflet.Marker>
+                    )
+                    : null;
+                //return the map without any layers shown
+                return (
+                        <leaflet.Map 
+                            center={this.state.position}
+                            zoom={this.state.zoom}
+                            dragging={this.props.draggable}
+                            zoomControl={this.props.zoomable}
+                            scrollWheelZoom={this.props.zoomable}
+                            zoomDelta={this.props.zoomable == false ? 0 : 1}
+                            ref={(ref) => {this.map = ref;}}>
+                            <OfflineLayer.OfflineLayer
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                            />
+                            <OfflineLayer.OfflineControl />
+                            {this.state.markers.map((position, idx) => 
+                                <leaflet.Marker key={`marker-${idx}`} position={position}>
+                                <leaflet.Popup>
+                                    <span>A pretty CSS3 popup. <br/> Easily customizable.</span>
+                                </leaflet.Popup>
+                                </leaflet.Marker>
+                                )}
+                        </leaflet.Map>
+                )
+            }
         }
-    }
     }
 }
 

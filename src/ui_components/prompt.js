@@ -1,42 +1,55 @@
-// import Popup from 'react-popup';
-
 'use strict';
 const React = require('react');
-const Popup = require('react-popup');
-// const leaflet = require('react-leaflet');
 //custom files required
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
 //logic
-// const locationManager = require('../business_components/locationManager.js');
 const logger = require('../business_components/logger.js');
-// const OfflineLayer = require('../business_components/offlineLayer.js');
 
 class Prompt extends React.Component {
     constructor(props) {
         super(props);
-
-        console.log(this.state);
         console.log(this.props);
+        this.endGame = this.endGame.bind(this);
 
         this.state = {
-            value: this.props.defaultValue
+            value: this.props.defaultValue,
+            gps: this.props.gps,
+            spots: this.props.spots
         };
 
-        // this.onChange = (e) => this._onChange(e);
+    }
+
+    componentDidMount() {
+        var that = this;
+
+        // do stuff here
+    }
+
+    endGame() {
+        try {
+            this.props.onEndGameChange(true);
+        } catch(e) {
+            console.log('Error:\n' + e);
+        }
     }
 
     render() {
         return (
-          <div className='popup'>
-            <div className='popup_inner'>
-              <h1>{this.props.text}</h1>
-            <button onClick={this.props.closePopup}>close me</button>
+            <div>
+                <div>
+                    <h1>hello</h1>
+                    <input type="text" placeholder={this.state.gps[0]} className="mm-popup__input" value={this.state.value} onChange={this.onChange} />
+                    <input type="text" placeholder={this.state.gps[1]} className="mm-popup__input" value={this.state.value} onChange={this.onChange} />
+                    <p>kjar aelrkjearvlk vealvrkeaörvHO voern voVILÖKVCnövjarv üraoirhv oi ovihaäorivn voriv naödkjfbv aoa </p>
+                </div>
+                <div>
+                    <button onClick={this.endGame}>close</button>
+                </div>
             </div>
-          </div>
-        );
-      }
+        )
+    }
 }
 
 module.exports = {
