@@ -189,7 +189,9 @@ class Map extends React.Component {
     handleStartGame() {
         // TODO: read sorces.json
         // set this.state.scores: filecontent
-        this.setState({showPopup: true});
+        this.setState({
+            showPopup: true
+        });
     }
 
     handleEndGame(obj) {
@@ -294,6 +296,7 @@ class Map extends React.Component {
                     selected={false}
                     scores={this.state.scores}
                     score={this.state.score}
+                    questionnaire={true}
                     onEndGameChange={this.handleEndGame}
                 >
                 </prompt.Prompt>
