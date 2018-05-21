@@ -116,7 +116,7 @@ class App extends React.Component {
         if (this.state.gamemode === true) {
             return (
                 <Ons.Toolbar>
-                    <div className='left'><button id="startGame" onClick={() => { this.startGamingMode.handleStartGame(); }} type="button">Play</button></div>,
+                    <div className='left'><button id="startGame" onClick={() => { this.startGamingMode.handleStartGame(); }} type="button">Play</button></div>
                     <div className='center'>{titles[this.state.index]}</div>
                     <div className='right'>
                         <Ons.ToolbarButton onClick={this.show}>

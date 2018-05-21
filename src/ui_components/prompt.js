@@ -12,11 +12,16 @@ class Prompt extends React.Component {
         super(props);
         console.log(this.props);
         this.endGame = this.endGame.bind(this);
+        this.nextQuestion = this.nextQuestion.bind(this);
 
         this.state = {
             value: this.props.defaultValue,
             gps: this.props.gps,
-            spots: this.props.spots
+            spots: this.props.spots,
+            selected: this.props.selected,
+            scores: this.props.scores,
+            score: this.props.score,
+            numberOfQuestions: this.props.numberOfQuestions
         };
 
     }
@@ -28,27 +33,52 @@ class Prompt extends React.Component {
     }
 
     endGame() {
+        let score = {spot: 'Botanical Garden', score: 10};
         try {
-            this.props.onEndGameChange(true);
+            this.props.onEndGameChange(score);
+            this.setState({selected: false});
         } catch(e) {
             console.log('Error:\n' + e);
         }
     }
 
+    nextQuestion() {
+        this.setState({
+            selected: true
+        });
+    }
+
     render() {
-        return (
-            <div>
+        if (this.state.selected === true) {
+            this.state.numberOfQuestions++;
+            return(
                 <div>
-                    <h1>hello</h1>
-                    <input type="text" placeholder={this.state.gps[0]} className="mm-popup__input" value={this.state.value} onChange={this.onChange} />
-                    <input type="text" placeholder={this.state.gps[1]} className="mm-popup__input" value={this.state.value} onChange={this.onChange} />
-                    <p>kjar aelrkjearvlk vealvrkeaörvHO voern voVILÖKVCnövjarv üraoirhv oi ovihaäorivn voriv naödkjfbv aoa </p>
+                    <h1>Question {this.state.numberOfQuestions}</h1>
+                    <div>
+                        <button onClick={this.endGame}>close</button>
+                        <button onClick={this.nextQuestion}>Submit</button>
+                    </div>
                 </div>
+            )
+        } else {
+            return (
                 <div>
-                    <button onClick={this.endGame}>close</button>
+                    <div>
+                        <h1>Select location</h1>
+                        <input type="text" placeholder={this.state.gps[0]} className="mm-popup__input" value={this.state.value} onChange={this.onChange} />
+                        <input type="text" placeholder={this.state.gps[1]} className="mm-popup__input" value={this.state.value} onChange={this.onChange} />
+                        <p>
+                            kjar aelrkjearvlk vealvrkeaörvHO voern 
+                            voVILÖKVCnövjarv üraoirhv oi ovihaäorivn voriv naödkjfbv aoa
+                        </p>
+                    </div>
+                    <div>
+                        <button onClick={this.endGame}>close</button>
+                        <button onClick={this.nextQuestion}>Submit</button>
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
     }
 }
 

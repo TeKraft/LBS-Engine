@@ -90513,7 +90513,6 @@ class App extends React.Component {
                         'Play'
                     )
                 ),
-                ',',
                 React.createElement(
                     'div',
                     { className: 'center' },
@@ -91000,10 +90999,16 @@ class Map extends React.Component {
     }
 
     handleStartGame() {
+        // TODO: read sorces.json
+        // set this.state.scores: filecontent
         this.setState({ showPopup: true });
     }
 
-    handleEndGame(bool) {
+    handleEndGame(obj) {
+        let spot = obj.spot;
+        let score = obj.score;
+        console.log(spot + ' = ' + score);
+        // TODO: add score to json file
         this.setState({ showPopup: false });
     }
 
@@ -91110,6 +91115,10 @@ class Map extends React.Component {
             return React.createElement(prompt.Prompt, {
                 gps: this.state.position,
                 spots: this.state.spotsInRange,
+                numberOfQuestions: 0,
+                selected: false,
+                scores: this.state.scores,
+                score: this.state.score,
                 onEndGameChange: this.handleEndGame
             });
         } else {
@@ -91255,11 +91264,16 @@ class Prompt extends React.Component {
         super(props);
         console.log(this.props);
         this.endGame = this.endGame.bind(this);
+        this.nextQuestion = this.nextQuestion.bind(this);
 
         this.state = {
             value: this.props.defaultValue,
             gps: this.props.gps,
-            spots: this.props.spots
+            spots: this.props.spots,
+            selected: this.props.selected,
+            scores: this.props.scores,
+            score: this.props.score,
+            numberOfQuestions: this.props.numberOfQuestions
         };
     }
 
@@ -91270,43 +91284,84 @@ class Prompt extends React.Component {
     }
 
     endGame() {
+        let score = { spot: 'Botanical Garden', score: 10 };
         try {
-            this.props.onEndGameChange(true);
+            this.props.onEndGameChange(score);
+            this.setState({ selected: false });
         } catch (e) {
             console.log('Error:\n' + e);
         }
     }
 
+    nextQuestion() {
+        this.setState({
+            selected: true
+        });
+    }
+
     render() {
-        return React.createElement(
-            'div',
-            null,
-            React.createElement(
+        if (this.state.selected === true) {
+            this.state.numberOfQuestions++;
+            return React.createElement(
                 'div',
                 null,
                 React.createElement(
                     'h1',
                     null,
-                    'hello'
+                    'Question ',
+                    this.state.numberOfQuestions
                 ),
-                React.createElement('input', { type: 'text', placeholder: this.state.gps[0], className: 'mm-popup__input', value: this.state.value, onChange: this.onChange }),
-                React.createElement('input', { type: 'text', placeholder: this.state.gps[1], className: 'mm-popup__input', value: this.state.value, onChange: this.onChange }),
                 React.createElement(
-                    'p',
+                    'div',
                     null,
-                    'kjar aelrkjearvlk vealvrkea\xF6rvHO voern voVIL\xD6KVCn\xF6vjarv \xFCraoirhv oi oviha\xE4orivn voriv na\xF6dkjfbv aoa '
+                    React.createElement(
+                        'button',
+                        { onClick: this.endGame },
+                        'close'
+                    ),
+                    React.createElement(
+                        'button',
+                        { onClick: this.nextQuestion },
+                        'Submit'
+                    )
                 )
-            ),
-            React.createElement(
+            );
+        } else {
+            return React.createElement(
                 'div',
                 null,
                 React.createElement(
-                    'button',
-                    { onClick: this.endGame },
-                    'close'
+                    'div',
+                    null,
+                    React.createElement(
+                        'h1',
+                        null,
+                        'Select location'
+                    ),
+                    React.createElement('input', { type: 'text', placeholder: this.state.gps[0], className: 'mm-popup__input', value: this.state.value, onChange: this.onChange }),
+                    React.createElement('input', { type: 'text', placeholder: this.state.gps[1], className: 'mm-popup__input', value: this.state.value, onChange: this.onChange }),
+                    React.createElement(
+                        'p',
+                        null,
+                        'kjar aelrkjearvlk vealvrkea\xF6rvHO voern voVIL\xD6KVCn\xF6vjarv \xFCraoirhv oi oviha\xE4orivn voriv na\xF6dkjfbv aoa'
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    null,
+                    React.createElement(
+                        'button',
+                        { onClick: this.endGame },
+                        'close'
+                    ),
+                    React.createElement(
+                        'button',
+                        { onClick: this.nextQuestion },
+                        'Submit'
+                    )
                 )
-            )
-        );
+            );
+        }
     }
 }
 

@@ -187,10 +187,16 @@ class Map extends React.Component {
     }
 
     handleStartGame() {
+        // TODO: read sorces.json
+        // set this.state.scores: filecontent
         this.setState({showPopup: true});
     }
 
-    handleEndGame(bool) {
+    handleEndGame(obj) {
+        let spot = obj.spot;
+        let score = obj.score;
+        console.log(spot + ' = ' + score);
+        // TODO: add score to json file
         this.setState({showPopup: false});
     }
 
@@ -284,6 +290,10 @@ class Map extends React.Component {
                 <prompt.Prompt
                     gps={this.state.position}
                     spots={this.state.spotsInRange}
+                    numberOfQuestions={0}
+                    selected={false}
+                    scores={this.state.scores}
+                    score={this.state.score}
                     onEndGameChange={this.handleEndGame}
                 >
                 </prompt.Prompt>
