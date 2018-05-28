@@ -92378,6 +92378,8 @@ module.exports={
     }
 }
 },{}],363:[function(require,module,exports){
+module.exports={}
+},{}],364:[function(require,module,exports){
 module.exports={
     "T-spots": {
         "type": "marker",
@@ -92614,7 +92616,7 @@ module.exports={
     }
 }
 
-},{}],364:[function(require,module,exports){
+},{}],365:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -92627,7 +92629,7 @@ ons.ready(function () {
     ReactDOM.render(React.createElement(app.App, null), document.getElementById('root'));
 });
 
-},{"./ui_components/app.js":365,"onsenui":296,"react":357,"react-dom":311}],365:[function(require,module,exports){
+},{"./ui_components/app.js":366,"onsenui":296,"react":357,"react-dom":311}],366:[function(require,module,exports){
 "use strict";
 
 const React = require('react');
@@ -93027,7 +93029,7 @@ module.exports = {
     App: App
 };
 
-},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":363,"./embededSite.js":366,"./map.js":367,"./pictureView.js":368,"./settings.js":370,"react":357,"react-bootstrap/lib/Button":304,"react-onsenui":354}],366:[function(require,module,exports){
+},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":364,"./embededSite.js":367,"./map.js":368,"./pictureView.js":369,"./settings.js":371,"react":357,"react-bootstrap/lib/Button":304,"react-onsenui":354}],367:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -93055,21 +93057,31 @@ module.exports = {
     EmbededComponent: EmbededComponent
 };
 
-},{"react":357}],367:[function(require,module,exports){
+},{"react":357}],368:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
 const leaflet = require('react-leaflet');
+const CordovaPromiseFS = require('cordova-promise-fs');
 //custom files required
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+const gamescore = require('../data_components/gamescore.json');
 //ui
 const prompt = require('./prompt.js');
 //logic
 const locationManager = require('../business_components/locationManager.js');
 const logger = require('../business_components/logger.js');
 const OfflineLayer = require('../business_components/offlineLayer.js');
+
+//setup for cordova promise fs
+var fs = CordovaPromiseFS({
+    persistent: true, // or false
+    storageSize: 20 * 1024 * 1024, // storage size in bytes, default 20MB
+    concurrency: 3, // how many concurrent uploads/downloads?
+    Promise: require('bluebird') // Your favorite Promise/A+ library!
+});
 
 class Map extends React.Component {
 
@@ -93242,22 +93254,35 @@ class Map extends React.Component {
         this.createLog('GameMode', bool);
     }
 
+    /**
+     * Function to set state for starting gameing prompt and read scores from gamescore.json
+     */
     handleStartGame() {
-        // TODO: read sorces.json
-        // set this.state.scores: filecontent
+        // read file (gamescore) to get previously saved points
         this.setState({
             showPopup: true,
-            score: 0 // to be changed
+            score: 0,
+            scores: gamescore
         });
     }
 
+    /**
+     * Function to add new score to the gamescore.json file to save score
+     * @param {Object} obj object containing selected spot, highest amount of points (compared current game to previously saved points) and content fo gamescore.json
+     */
     handleEndGame(obj) {
         let spot = obj.spot;
         let score = obj.newScore;
-        let scores = obj.scores;
-        console.log(spot + ' = ' + score);
-        console.log(scores);
-        // TODO: add score to json file
+        const filePath = '../src/data_components/gamescore.json';
+        obj.scores[spot] = score;
+
+        // add new score to file
+        fs.write(filePath, obj.scores).then(function success(value) {
+            console.log('File successfully written');
+        }, function error(err) {
+            console.log('Error writing file: ' + err);
+        });
+
         this.setState({ showPopup: false });
     }
 
@@ -93433,7 +93458,7 @@ module.exports = {
     Map: Map
 };
 
-},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"../business_components/offlineLayer.js":361,"../data_components/config.json":362,"../data_components/layers.json":363,"./prompt.js":369,"react":357,"react-leaflet":342}],368:[function(require,module,exports){
+},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"../business_components/offlineLayer.js":361,"../data_components/config.json":362,"../data_components/gamescore.json":363,"../data_components/layers.json":364,"./prompt.js":370,"bluebird":15,"cordova-promise-fs":17,"react":357,"react-leaflet":342}],369:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -93498,7 +93523,7 @@ module.exports = {
     PictureView: PictureView
 };
 
-},{"../data_components/config.json":362,"./map.js":367,"react":357,"react-onsenui":354}],369:[function(require,module,exports){
+},{"../data_components/config.json":362,"./map.js":368,"react":357,"react-onsenui":354}],370:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -93546,9 +93571,14 @@ class Prompt extends React.Component {
      * Function to close the Prompt component and return to the map
      */
     endGame() {
+        let score = this.state.newScore;
+
+        if (this.state.scores[this.state.selectedSpot] !== undefined && this.state.scores[this.state.selectedSpot] > score) {
+            score = this.state.scores[this.state.selectedSpot];
+        }
         let scoreboard = {
             spot: this.state.selectedSpot,
-            newScore: this.state.newScore,
+            newScore: score,
             scores: this.state.scores
         };
         try {
@@ -93660,9 +93690,7 @@ class Prompt extends React.Component {
             if (answer[0] === this.state.qset[this.state.numberOfQuestions - 1].Answer) {
                 points = 5;
             }
-            console.log(this.state.newScore);
             let newScore = this.state.newScore + points;
-            console.log(newScore);
             this.setState({
                 selectedAnswer: answer,
                 newScore: newScore
@@ -93723,7 +93751,6 @@ class Prompt extends React.Component {
             );
         } else if (this.state.questionnaire === true) {
             // render to show questions
-            console.log('question: ' + this.state.numberOfQuestions);
             if (this.state.selectedQuestionAnswer) {
                 var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
             } else {
@@ -93809,7 +93836,7 @@ module.exports = {
     Prompt: Prompt
 };
 
-},{"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":363,"react":357,"react-bootstrap/lib/Button":304}],370:[function(require,module,exports){
+},{"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":364,"react":357,"react-bootstrap/lib/Button":304}],371:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -94049,4 +94076,4 @@ module.exports = {
     settingsComponent: settingsComponent
 };
 
-},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"react":357,"react-onsenui":354}]},{},[364]);
+},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"react":357,"react-onsenui":354}]},{},[365]);

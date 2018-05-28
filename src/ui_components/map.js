@@ -1,16 +1,26 @@
 'use strict';
 const React = require('react');
 const leaflet = require('react-leaflet');
+const CordovaPromiseFS = require('cordova-promise-fs');
 //custom files required
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+const gamescore = require('../data_components/gamescore.json');
 //ui
 const prompt = require('./prompt.js');
 //logic
 const locationManager = require('../business_components/locationManager.js');
 const logger = require('../business_components/logger.js');
 const OfflineLayer = require('../business_components/offlineLayer.js');
+
+//setup for cordova promise fs
+var fs = CordovaPromiseFS({
+    persistent: true, // or false
+    storageSize: 20*1024*1024, // storage size in bytes, default 20MB
+    concurrency: 3,// how many concurrent uploads/downloads?
+    Promise: require('bluebird') // Your favorite Promise/A+ library!
+});
 
 class Map extends React.Component {
 
@@ -186,22 +196,35 @@ class Map extends React.Component {
         this.createLog('GameMode', bool);
     }
 
+    /**
+     * Function to set state for starting gameing prompt and read scores from gamescore.json
+     */
     handleStartGame() {
-        // TODO: read sorces.json
-        // set this.state.scores: filecontent
+        // read file (gamescore) to get previously saved points
         this.setState({
             showPopup: true,
-            score: 0            // to be changed
+            score: 0,
+            scores: gamescore
         });
     }
 
+    /**
+     * Function to add new score to the gamescore.json file to save score
+     * @param {Object} obj object containing selected spot, highest amount of points (compared current game to previously saved points) and content fo gamescore.json
+     */
     handleEndGame(obj) {
         let spot = obj.spot;
         let score = obj.newScore;
-        let scores = obj.scores;
-        console.log(spot + ' = ' + score);
-        console.log(scores);
-        // TODO: add score to json file
+        const filePath = '../src/data_components/gamescore.json';
+        obj.scores[spot] = score;
+        
+        // add new score to file
+        fs.write(filePath, obj.scores).then(function success(value) {
+            console.log('File successfully written');
+        }, function error(err) {
+            console.log('Error writing file: ' + err);
+        });
+
         this.setState({showPopup: false});
     }
 

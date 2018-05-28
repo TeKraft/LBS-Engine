@@ -45,9 +45,14 @@ class Prompt extends React.Component {
      * Function to close the Prompt component and return to the map
      */
     endGame() {
+        let score = this.state.newScore;
+
+        if (this.state.scores[this.state.selectedSpot] !== undefined && this.state.scores[this.state.selectedSpot] > score) {
+            score = this.state.scores[this.state.selectedSpot];
+        }
         let scoreboard = {
             spot: this.state.selectedSpot,
-            newScore: this.state.newScore,
+            newScore: score,
             scores: this.state.scores
         };
         try {
@@ -155,9 +160,7 @@ class Prompt extends React.Component {
             if (answer[0] === this.state.qset[this.state.numberOfQuestions - 1].Answer) {
                 points = 5;
             }
-            console.log(this.state.newScore);
             let newScore = this.state.newScore + points;
-            console.log(newScore);
             this.setState({
                 selectedAnswer: answer,
                 newScore: newScore
@@ -200,7 +203,6 @@ class Prompt extends React.Component {
             )
         } else if (this.state.questionnaire === true) {
             // render to show questions
-            console.log('question: ' + this.state.numberOfQuestions);
             if (this.state.selectedQuestionAnswer) {
                 var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
             } else {
