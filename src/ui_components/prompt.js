@@ -1,7 +1,7 @@
 'use strict';
 const React = require('react');
 const Button = require('react-bootstrap/lib/Button');
-const Alert = require('react-bootstrap/lib/Alert');
+// const Alert = require('react-bootstrap/lib/Alert');
 //custom files required
 //data
 const config = require('../data_components/config.json');
@@ -25,7 +25,8 @@ class Prompt extends React.Component {
             spots: this.props.spots,
             selected: this.props.selected,
             scores: this.props.scores,
-            score: this.props.score,
+            oldScore: this.props.score,
+            newScore: this.props.score,
             questionnaire: this.props.questionnaire,
             numberOfQuestions: this.props.numberOfQuestions,
             qset: null,
@@ -44,13 +45,13 @@ class Prompt extends React.Component {
      * Function to close the Prompt component and return to the map
      */
     endGame() {
-        let score = {
-            spot: 'Botanical Garden',
-            score: 10,
+        let scoreboard = {
+            spot: this.state.selectedSpot,
+            newScore: this.state.newScore,
             scores: this.state.scores
         };
         try {
-            this.props.onEndGameChange(score);
+            this.props.onEndGameChange(scoreboard);
             this.setState({selected: false});
         } catch(e) {
             console.log('Error:\n' + e);
@@ -71,11 +72,14 @@ class Prompt extends React.Component {
                 this.setState({
                     selected: true
                 });
+            this.state.numberOfQuestions++;
             } else {
-                <Alert bsStyle='warning'><strong>Attention!</strong> No spot found.</Alert>
+                alert('Attention!\nNo spot found.');
+                // <Alert bsStyle='warning'><strong>Attention!</strong> No spot found.</Alert>
             }
         } else {
-            <Alert bsStyle='danger'><strong>Attention!</strong> Please select a spot.</Alert>
+            alert('Attention!\nPlease select a spot.');
+            // <Alert bsStyle='danger'><strong>Attention!</strong> Please select a spot.</Alert>
         }
     }
 
@@ -87,11 +91,13 @@ class Prompt extends React.Component {
             this.setState({
                 selectedAnswer: null
             });
+            this.state.numberOfQuestions++;
         } else {
-            <Alert bsStyle='danger'><strong>Attention!</strong> Please select an answer.</Alert>
+            alert('Attention!\nPlease select an answer.');
+            // <Alert bsStyle='danger'><strong>Attention!</strong> Please select an answer.</Alert>
         }
 
-        if (this.state.qset === null || this.state.numberOfQuestions === this.state.qset.length - 1) {
+        if (this.state.qset === null || this.state.numberOfQuestions === this.state.qset.length) {
             this.setState({
                 questionnaire: false
             })
@@ -114,8 +120,19 @@ class Prompt extends React.Component {
      */
     makeAnswerButton(item) {
         let answer = Object.entries(item)[0];
+        let buttonStyle = 'default';
+
+        if (this.state.selectedAnswer !== null ) {
+            if (answer[0] === this.state.selectedAnswer[0]) {
+                buttonStyle = 'warning';
+            }
+            if (answer[0] === this.state.qset[this.state.numberOfQuestions-1].Answer) {
+                buttonStyle = 'success';
+            }
+        }
+
         return (
-            <Button bsSize='large' ref={answer[0]} key={answer[0]} value={answer[1]} onClick={() => this.submitAnswer(answer)} block>{answer[1]}</Button>
+            <Button bsSize='large' bsStyle={buttonStyle} ref={answer[0]} key={answer[0]} value={answer[1]} onClick={(event) => this.submitAnswer(answer, event)} block>{answer[1]}</Button>
         )
     }
 
@@ -131,18 +148,33 @@ class Prompt extends React.Component {
      * 
      * @param {Array} answer array containing letter and value of answer
      */
-    submitAnswer(answer) {
+    submitAnswer(answer, event) {
         if (this.state.selectedAnswer === null) {
-            this.state.selectedAnswer = answer;
-            let selectedBut = this.refs[this.state.selectedAnswer[0]];
-            if (this.state.selectedAnswer[0] === this.state.qset[this.state.numberOfQuestions - 1].Answer) {
-                // TODO if right answer was selected
-                // let correctBut = this.ref[this.state.qset];
-            } else {
-                // TODO wrong answer was selected
+            // this.state.selectedAnswer = answer; 
+            let points = 0;
+            if (answer[0] === this.state.qset[this.state.numberOfQuestions - 1].Answer) {
+                points = 5;
             }
-        } else {
-            // TODO no selection possible anymore
+            console.log(this.state.newScore);
+            let newScore = this.state.newScore + points;
+            console.log(newScore);
+            this.setState({
+                selectedAnswer: answer,
+                newScore: newScore
+            });
+            // let selectedBut = this.refs[this.state.selectedAnswer[0]];
+            // if (this.state.selectedAnswer[0] === this.state.qset[this.state.numberOfQuestions - 1].Answer) {
+            //     // TODO if right answer was selected
+            //     // let correctBut = this.ref[this.state.qset];
+
+            //     this.setState({
+            //         selected
+            //     })
+            // } else {
+            //     // TODO wrong answer was selected
+
+            //     // setState --> !!!
+            // }
         }
     }
 
@@ -168,8 +200,12 @@ class Prompt extends React.Component {
             )
         } else if (this.state.questionnaire === true) {
             // render to show questions
-            this.state.numberOfQuestions++;
-            var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
+            console.log('question: ' + this.state.numberOfQuestions);
+            if (this.state.selectedQuestionAnswer) {
+                var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
+            } else {
+                var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
+            }
             return (
                 <div>
                     <h1>Question {this.state.numberOfQuestions}</h1>
@@ -189,7 +225,8 @@ class Prompt extends React.Component {
                 <div>
                     <h1>Scoreboard</h1>
                     <div>
-                        <p>scores should be here</p>
+                        <p>You received {this.state.newScore - this.state.oldScore} points.</p>
+                        <p>Your new score for this spot is: {this.state.newScore}.</p>
                     </div>
                     <div>
                         <Button bsStyle="primary" onClick={this.endGame}>close</Button>

@@ -190,14 +190,17 @@ class Map extends React.Component {
         // TODO: read sorces.json
         // set this.state.scores: filecontent
         this.setState({
-            showPopup: true
+            showPopup: true,
+            score: 0            // to be changed
         });
     }
 
     handleEndGame(obj) {
         let spot = obj.spot;
-        let score = obj.score;
+        let score = obj.newScore;
+        let scores = obj.scores;
         console.log(spot + ' = ' + score);
+        console.log(scores);
         // TODO: add score to json file
         this.setState({showPopup: false});
     }
