@@ -2,7 +2,6 @@
 
 const React = require('react');
 const Ons = require('react-onsenui');
-const Button = require('react-bootstrap/lib/Button');
 //custom files
 //data
 const config = require('../data_components/config.json');
@@ -116,7 +115,7 @@ class App extends React.Component {
         if (this.state.gamemode === true) {
             return (
                 <Ons.Toolbar>
-                    <div className='left'><Button bsStyle="success" id="startGame" onClick={() => { this.startGamingMode.handleStartGame(); }} type="button">Play</Button></div>
+                    <div className='left'><ons-button style={{background:'green', color:'white'}} id="startGame" onClick={() => { this.startGamingMode.handleStartGame(); }} type="button">Play</ons-button></div>
                     <div className='center'>{titles[this.state.index]}</div>
                     <div className='right'>
                         <Ons.ToolbarButton onClick={this.show}>

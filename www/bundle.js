@@ -92634,7 +92634,6 @@ ons.ready(function () {
 
 const React = require('react');
 const Ons = require('react-onsenui');
-const Button = require('react-bootstrap/lib/Button');
 //custom files
 //data
 const config = require('../data_components/config.json');
@@ -92752,8 +92751,8 @@ class App extends React.Component {
                     'div',
                     { className: 'left' },
                     React.createElement(
-                        Button,
-                        { bsStyle: 'success', id: 'startGame', onClick: () => {
+                        'ons-button',
+                        { style: { background: 'green', color: 'white' }, id: 'startGame', onClick: () => {
                                 this.startGamingMode.handleStartGame();
                             }, type: 'button' },
                         'Play'
@@ -93029,7 +93028,7 @@ module.exports = {
     App: App
 };
 
-},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":364,"./embededSite.js":367,"./map.js":368,"./pictureView.js":369,"./settings.js":371,"react":357,"react-bootstrap/lib/Button":304,"react-onsenui":354}],367:[function(require,module,exports){
+},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":364,"./embededSite.js":367,"./map.js":368,"./pictureView.js":369,"./settings.js":371,"react":357,"react-onsenui":354}],367:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -93527,8 +93526,8 @@ module.exports = {
 'use strict';
 
 const React = require('react');
+const Ons = require('react-onsenui');
 const Button = require('react-bootstrap/lib/Button');
-// const Alert = require('react-bootstrap/lib/Alert');
 //custom files required
 //data
 const config = require('../data_components/config.json');
@@ -93606,11 +93605,9 @@ class Prompt extends React.Component {
                 this.state.numberOfQuestions++;
             } else {
                 alert('Attention!\nNo spot found.');
-                // <Alert bsStyle='warning'><strong>Attention!</strong> No spot found.</Alert>
             }
         } else {
             alert('Attention!\nPlease select a spot.');
-            // <Alert bsStyle='danger'><strong>Attention!</strong> Please select a spot.</Alert>
         }
     }
 
@@ -93625,7 +93622,6 @@ class Prompt extends React.Component {
             this.state.numberOfQuestions++;
         } else {
             alert('Attention!\nPlease select an answer.');
-            // <Alert bsStyle='danger'><strong>Attention!</strong> Please select an answer.</Alert>
         }
 
         if (this.state.qset === null || this.state.numberOfQuestions === this.state.qset.length) {
@@ -93695,19 +93691,6 @@ class Prompt extends React.Component {
                 selectedAnswer: answer,
                 newScore: newScore
             });
-            // let selectedBut = this.refs[this.state.selectedAnswer[0]];
-            // if (this.state.selectedAnswer[0] === this.state.qset[this.state.numberOfQuestions - 1].Answer) {
-            //     // TODO if right answer was selected
-            //     // let correctBut = this.ref[this.state.qset];
-
-            //     this.setState({
-            //         selected
-            //     })
-            // } else {
-            //     // TODO wrong answer was selected
-
-            //     // setState --> !!!
-            // }
         }
     }
 
@@ -93723,11 +93706,9 @@ class Prompt extends React.Component {
                     null,
                     React.createElement(
                         'h1',
-                        null,
+                        { align: 'center' },
                         'Select Spot'
                     ),
-                    React.createElement('input', { type: 'text', placeholder: this.state.gps[0], className: 'mm-popup__input', value: this.state.value, onChange: this.onChange }),
-                    React.createElement('input', { type: 'text', placeholder: this.state.gps[1], className: 'mm-popup__input', value: this.state.value, onChange: this.onChange }),
                     React.createElement(
                         'div',
                         null,
@@ -93738,13 +93719,13 @@ class Prompt extends React.Component {
                     'div',
                     null,
                     React.createElement(
-                        Button,
-                        { bsStyle: 'primary', onClick: this.endGame },
+                        'ons-button',
+                        { onClick: this.endGame, style: { float: 'left' } },
                         'close'
                     ),
                     React.createElement(
-                        Button,
-                        { bsStyle: 'primary', onClick: this.selectSpot },
+                        'ons-button',
+                        { onClick: this.selectSpot, style: { float: 'right' } },
                         'Submit'
                     )
                 )
@@ -93761,7 +93742,7 @@ class Prompt extends React.Component {
                 null,
                 React.createElement(
                     'h1',
-                    null,
+                    { align: 'center' },
                     'Question ',
                     this.state.numberOfQuestions
                 ),
@@ -93779,13 +93760,13 @@ class Prompt extends React.Component {
                     'div',
                     null,
                     React.createElement(
-                        Button,
-                        { bsStyle: 'primary', onClick: this.endGame },
+                        'ons-button',
+                        { onClick: this.endGame, style: { float: 'left' } },
                         'close'
                     ),
                     React.createElement(
-                        Button,
-                        { bsStyle: 'primary', onClick: this.nextQuestion },
+                        'ons-button',
+                        { onClick: this.nextQuestion, style: { float: 'right' } },
                         'Next'
                     )
                 )
@@ -93797,7 +93778,7 @@ class Prompt extends React.Component {
                 null,
                 React.createElement(
                     'h1',
-                    null,
+                    { align: 'center' },
                     'Scoreboard'
                 ),
                 React.createElement(
@@ -93805,14 +93786,14 @@ class Prompt extends React.Component {
                     null,
                     React.createElement(
                         'p',
-                        null,
+                        { align: 'center' },
                         'You received ',
                         this.state.newScore - this.state.oldScore,
                         ' points.'
                     ),
                     React.createElement(
                         'p',
-                        null,
+                        { align: 'center' },
                         'Your new score for this spot is: ',
                         this.state.newScore,
                         '.'
@@ -93822,9 +93803,9 @@ class Prompt extends React.Component {
                     'div',
                     null,
                     React.createElement(
-                        Button,
-                        { bsStyle: 'primary', onClick: this.endGame },
-                        'close'
+                        'ons-button',
+                        { onClick: this.endGame, style: { float: 'right' }, modifier: 'large' },
+                        'finish'
                     )
                 )
             );
@@ -93836,7 +93817,7 @@ module.exports = {
     Prompt: Prompt
 };
 
-},{"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":364,"react":357,"react-bootstrap/lib/Button":304}],371:[function(require,module,exports){
+},{"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":364,"react":357,"react-bootstrap/lib/Button":304,"react-onsenui":354}],371:[function(require,module,exports){
 'use strict';
 
 const React = require('react');

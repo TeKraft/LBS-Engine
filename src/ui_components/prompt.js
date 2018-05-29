@@ -1,7 +1,7 @@
 'use strict';
 const React = require('react');
+const Ons = require('react-onsenui');
 const Button = require('react-bootstrap/lib/Button');
-// const Alert = require('react-bootstrap/lib/Alert');
 //custom files required
 //data
 const config = require('../data_components/config.json');
@@ -80,11 +80,9 @@ class Prompt extends React.Component {
             this.state.numberOfQuestions++;
             } else {
                 alert('Attention!\nNo spot found.');
-                // <Alert bsStyle='warning'><strong>Attention!</strong> No spot found.</Alert>
             }
         } else {
             alert('Attention!\nPlease select a spot.');
-            // <Alert bsStyle='danger'><strong>Attention!</strong> Please select a spot.</Alert>
         }
     }
 
@@ -99,7 +97,6 @@ class Prompt extends React.Component {
             this.state.numberOfQuestions++;
         } else {
             alert('Attention!\nPlease select an answer.');
-            // <Alert bsStyle='danger'><strong>Attention!</strong> Please select an answer.</Alert>
         }
 
         if (this.state.qset === null || this.state.numberOfQuestions === this.state.qset.length) {
@@ -165,19 +162,6 @@ class Prompt extends React.Component {
                 selectedAnswer: answer,
                 newScore: newScore
             });
-            // let selectedBut = this.refs[this.state.selectedAnswer[0]];
-            // if (this.state.selectedAnswer[0] === this.state.qset[this.state.numberOfQuestions - 1].Answer) {
-            //     // TODO if right answer was selected
-            //     // let correctBut = this.ref[this.state.qset];
-
-            //     this.setState({
-            //         selected
-            //     })
-            // } else {
-            //     // TODO wrong answer was selected
-
-            //     // setState --> !!!
-            // }
         }
     }
 
@@ -188,16 +172,14 @@ class Prompt extends React.Component {
             return (
                 <div>
                     <div>
-                        <h1>Select Spot</h1>
-                        <input type="text" placeholder={this.state.gps[0]} className="mm-popup__input" value={this.state.value} onChange={this.onChange} />
-                        <input type="text" placeholder={this.state.gps[1]} className="mm-popup__input" value={this.state.value} onChange={this.onChange} />
+                        <h1 align='center'>Select Spot</h1>
                         <div>
                             {listOfSpots}
                         </div>
                     </div>
                     <div>
-                        <Button bsStyle="primary" onClick={this.endGame}>close</Button>
-                        <Button bsStyle="primary" onClick={this.selectSpot}>Submit</Button>
+                        <ons-button onClick={this.endGame} style={{float: 'left'}}>close</ons-button>
+                        <ons-button onClick={this.selectSpot} style={{float: 'right'}}>Submit</ons-button>
                     </div>
                 </div>
             )
@@ -210,14 +192,14 @@ class Prompt extends React.Component {
             }
             return (
                 <div>
-                    <h1>Question {this.state.numberOfQuestions}</h1>
+                    <h1 align='center'>Question {this.state.numberOfQuestions}</h1>
                     <div>
                         <h2>{this.state.qset[this.state.numberOfQuestions - 1].Question}</h2>
                         {listOfAnswers}
                     </div>
                     <div>
-                        <Button bsStyle="primary" onClick={this.endGame}>close</Button>
-                        <Button bsStyle="primary" onClick={this.nextQuestion}>Next</Button>
+                        <ons-button onClick={this.endGame} style={{float: 'left'}}>close</ons-button>
+                        <ons-button onClick={this.nextQuestion} style={{float: 'right'}}>Next</ons-button>
                     </div>
                 </div>
             )
@@ -225,13 +207,13 @@ class Prompt extends React.Component {
             // render to show scoreboard at the end of the questionnaire
             return (
                 <div>
-                    <h1>Scoreboard</h1>
+                    <h1 align='center'>Scoreboard</h1>
                     <div>
-                        <p>You received {this.state.newScore - this.state.oldScore} points.</p>
-                        <p>Your new score for this spot is: {this.state.newScore}.</p>
+                        <p align='center'>You received {this.state.newScore - this.state.oldScore} points.</p>
+                        <p align='center'>Your new score for this spot is: {this.state.newScore}.</p>
                     </div>
                     <div>
-                        <Button bsStyle="primary" onClick={this.endGame}>close</Button>
+                        <ons-button onClick={this.endGame} style={{float: 'right'}} modifier='large'>finish</ons-button>
                     </div>
                 </div>
             )
