@@ -47,20 +47,24 @@ class Prompt extends React.Component {
     endGame() {
         let score = this.state.newScore;
 
-        if (this.state.scores[this.state.selectedSpot] !== undefined && this.state.scores[this.state.selectedSpot] > score) {
-            score = this.state.scores[this.state.selectedSpot];
+        if (this.state.selectedSpot !== null) {
+            if (this.state.scores[this.state.selectedSpot] !== undefined && this.state.scores[this.state.selectedSpot] > score) {
+                score = this.state.scores[this.state.selectedSpot];
+            }
+
+            let scoreboard = {
+                spot: this.state.selectedSpot,
+                newScore: score,
+                scores: this.state.scores
+            };
+            try {
+                this.props.onEndGameChange(scoreboard);
+                this.setState({selected: false});
+            } catch(e) {
+                console.log('Error:\n' + e);
+            }
         }
-        let scoreboard = {
-            spot: this.state.selectedSpot,
-            newScore: score,
-            scores: this.state.scores
-        };
-        try {
-            this.props.onEndGameChange(scoreboard);
-            this.setState({selected: false});
-        } catch(e) {
-            console.log('Error:\n' + e);
-        }
+
     }
 
     /**
@@ -184,36 +188,52 @@ class Prompt extends React.Component {
                 </div>
             )
         } else if (this.state.questionnaire === true) {
-            // render to show questions
-            if (this.state.selectedQuestionAnswer) {
-                var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
+            if (this.state.qset[0].Options !== undefined) {
+                // render to show questions
+                if (this.state.selectedQuestionAnswer) {
+                    var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
+                } else {
+                    var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
+                }
+                return (
+                    <div>
+                        <h1 align='center'>Question {this.state.numberOfQuestions}</h1>
+                        <div>
+                            <h2>{this.state.qset[this.state.numberOfQuestions - 1].Question}</h2>
+                            {listOfAnswers}
+                        </div>
+                        <div>
+                            <ons-button onClick={this.endGame} style={{float: 'left'}}>close</ons-button>
+                            <ons-button onClick={this.nextQuestion} style={{float: 'right'}}>Next</ons-button>
+                        </div>
+                    </div>
+                )
             } else {
-                var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
+                return (
+                    <div>
+                        <h1 align='center'>Attention!</h1>
+                        <p align='center'>No questions for this spot are provided.</p>
+                        <div>
+                            <ons-button modifier='large' style={{float: 'center'}} onClick={this.endGame}>close</ons-button>
+                        </div>
+                    </div>
+                )
             }
-            return (
-                <div>
-                    <h1 align='center'>Question {this.state.numberOfQuestions}</h1>
-                    <div>
-                        <h2>{this.state.qset[this.state.numberOfQuestions - 1].Question}</h2>
-                        {listOfAnswers}
-                    </div>
-                    <div>
-                        <ons-button onClick={this.endGame} style={{float: 'left'}}>close</ons-button>
-                        <ons-button onClick={this.nextQuestion} style={{float: 'right'}}>Next</ons-button>
-                    </div>
-                </div>
-            )
         } else {
             // render to show scoreboard at the end of the questionnaire
+            let highscore = this.state.newScore;
+            if (this.state.scores[this.state.selectedSpot] !== undefined && this.state.scores[this.state.selectedSpot] > highscore) {
+                highscore = this.state.scores[this.state.selectedSpot];
+            }
             return (
                 <div>
                     <h1 align='center'>Scoreboard</h1>
                     <div>
                         <p align='center'>You received {this.state.newScore - this.state.oldScore} points.</p>
-                        <p align='center'>Your new score for this spot is: {this.state.newScore}.</p>
+                        <p align='center'>Your highscore for this spot is: {highscore}.</p>
                     </div>
                     <div>
-                        <ons-button onClick={this.endGame} style={{float: 'right'}} modifier='large'>finish</ons-button>
+                        <ons-button onClick={this.endGame} style={{float: 'center'}} modifier='large'>finish</ons-button>
                     </div>
                 </div>
             )

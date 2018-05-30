@@ -92144,6 +92144,8 @@ function createFile() {
 
     //return a promise of the file, that is created or found
     return new Promise(function (resolve, reject) {
+        console.log('\n\n\n#########');
+        console.log(filename);
         //check for the file system ready
         fs.deviceready.then(function () {
             fs.create(filename + '.csv').then(function success(result) {
@@ -92378,8 +92380,6 @@ module.exports={
     }
 }
 },{}],363:[function(require,module,exports){
-module.exports={}
-},{}],364:[function(require,module,exports){
 module.exports={
     "T-spots": {
         "type": "marker",
@@ -92616,7 +92616,7 @@ module.exports={
     }
 }
 
-},{}],365:[function(require,module,exports){
+},{}],364:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -92629,7 +92629,7 @@ ons.ready(function () {
     ReactDOM.render(React.createElement(app.App, null), document.getElementById('root'));
 });
 
-},{"./ui_components/app.js":366,"onsenui":296,"react":357,"react-dom":311}],366:[function(require,module,exports){
+},{"./ui_components/app.js":365,"onsenui":296,"react":357,"react-dom":311}],365:[function(require,module,exports){
 "use strict";
 
 const React = require('react');
@@ -92743,7 +92743,7 @@ class App extends React.Component {
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
         const titles = ['About', 'Map', 'Streetview', 'Settings', 'Help'];
-        if (this.state.gamemode === true) {
+        if (this.state.gamemode === true && titles[this.state.index] === 'Map') {
             return React.createElement(
                 Ons.Toolbar,
                 null,
@@ -93028,7 +93028,7 @@ module.exports = {
     App: App
 };
 
-},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":364,"./embededSite.js":367,"./map.js":368,"./pictureView.js":369,"./settings.js":371,"react":357,"react-onsenui":354}],367:[function(require,module,exports){
+},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":363,"./embededSite.js":366,"./map.js":367,"./pictureView.js":368,"./settings.js":370,"react":357,"react-onsenui":354}],366:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -93056,7 +93056,7 @@ module.exports = {
     EmbededComponent: EmbededComponent
 };
 
-},{"react":357}],368:[function(require,module,exports){
+},{"react":357}],367:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -93066,7 +93066,8 @@ const CordovaPromiseFS = require('cordova-promise-fs');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
-const gamescore = require('../data_components/gamescore.json');
+// const gamescore = require('/home/torben/Documents/gamescore.json');
+// const gamescore = require('../data_components/gamescore.json');
 //ui
 const prompt = require('./prompt.js');
 //logic
@@ -93257,31 +93258,24 @@ class Map extends React.Component {
      * Function to set state for starting gameing prompt and read scores from gamescore.json
      */
     handleStartGame() {
-        // read file (gamescore) to get previously saved points
+
         this.setState({
             showPopup: true,
             score: 0,
-            scores: gamescore
+            scores: localStorage
         });
     }
 
     /**
-     * Function to add new score to the gamescore.json file to save score
+     * Function to add new score to the local storage to save score
      * @param {Object} obj object containing selected spot, highest amount of points (compared current game to previously saved points) and content fo gamescore.json
      */
     handleEndGame(obj) {
         let spot = obj.spot;
         let score = obj.newScore;
-        const filePath = '../src/data_components/gamescore.json';
         obj.scores[spot] = score;
-
-        // add new score to file
-        fs.write(filePath, obj.scores).then(function success(value) {
-            console.log('File successfully written');
-        }, function error(err) {
-            console.log('Error writing file: ' + err);
-        });
-
+        // add score to local storage (save score)
+        localStorage.setItem(spot, score);
         this.setState({ showPopup: false });
     }
 
@@ -93457,7 +93451,7 @@ module.exports = {
     Map: Map
 };
 
-},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"../business_components/offlineLayer.js":361,"../data_components/config.json":362,"../data_components/gamescore.json":363,"../data_components/layers.json":364,"./prompt.js":370,"bluebird":15,"cordova-promise-fs":17,"react":357,"react-leaflet":342}],369:[function(require,module,exports){
+},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"../business_components/offlineLayer.js":361,"../data_components/config.json":362,"../data_components/layers.json":363,"./prompt.js":369,"bluebird":15,"cordova-promise-fs":17,"react":357,"react-leaflet":342}],368:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -93522,7 +93516,7 @@ module.exports = {
     PictureView: PictureView
 };
 
-},{"../data_components/config.json":362,"./map.js":368,"react":357,"react-onsenui":354}],370:[function(require,module,exports){
+},{"../data_components/config.json":362,"./map.js":367,"react":357,"react-onsenui":354}],369:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -93572,19 +93566,22 @@ class Prompt extends React.Component {
     endGame() {
         let score = this.state.newScore;
 
-        if (this.state.scores[this.state.selectedSpot] !== undefined && this.state.scores[this.state.selectedSpot] > score) {
-            score = this.state.scores[this.state.selectedSpot];
-        }
-        let scoreboard = {
-            spot: this.state.selectedSpot,
-            newScore: score,
-            scores: this.state.scores
-        };
-        try {
-            this.props.onEndGameChange(scoreboard);
-            this.setState({ selected: false });
-        } catch (e) {
-            console.log('Error:\n' + e);
+        if (this.state.selectedSpot !== null) {
+            if (this.state.scores[this.state.selectedSpot] !== undefined && this.state.scores[this.state.selectedSpot] > score) {
+                score = this.state.scores[this.state.selectedSpot];
+            }
+
+            let scoreboard = {
+                spot: this.state.selectedSpot,
+                newScore: score,
+                scores: this.state.scores
+            };
+            try {
+                this.props.onEndGameChange(scoreboard);
+                this.setState({ selected: false });
+            } catch (e) {
+                console.log('Error:\n' + e);
+            }
         }
     }
 
@@ -93731,48 +93728,78 @@ class Prompt extends React.Component {
                 )
             );
         } else if (this.state.questionnaire === true) {
-            // render to show questions
-            if (this.state.selectedQuestionAnswer) {
-                var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
-            } else {
-                var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
-            }
-            return React.createElement(
-                'div',
-                null,
-                React.createElement(
-                    'h1',
-                    { align: 'center' },
-                    'Question ',
-                    this.state.numberOfQuestions
-                ),
-                React.createElement(
+            if (this.state.qset[0].Options !== undefined) {
+                // render to show questions
+                if (this.state.selectedQuestionAnswer) {
+                    var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
+                } else {
+                    var listOfAnswers = this.state.qset[this.state.numberOfQuestions - 1].Options.map(this.makeAnswerButton, this);
+                }
+                return React.createElement(
                     'div',
                     null,
                     React.createElement(
-                        'h2',
+                        'h1',
+                        { align: 'center' },
+                        'Question ',
+                        this.state.numberOfQuestions
+                    ),
+                    React.createElement(
+                        'div',
                         null,
-                        this.state.qset[this.state.numberOfQuestions - 1].Question
+                        React.createElement(
+                            'h2',
+                            null,
+                            this.state.qset[this.state.numberOfQuestions - 1].Question
+                        ),
+                        listOfAnswers
                     ),
-                    listOfAnswers
-                ),
-                React.createElement(
+                    React.createElement(
+                        'div',
+                        null,
+                        React.createElement(
+                            'ons-button',
+                            { onClick: this.endGame, style: { float: 'left' } },
+                            'close'
+                        ),
+                        React.createElement(
+                            'ons-button',
+                            { onClick: this.nextQuestion, style: { float: 'right' } },
+                            'Next'
+                        )
+                    )
+                );
+            } else {
+                return React.createElement(
                     'div',
                     null,
                     React.createElement(
-                        'ons-button',
-                        { onClick: this.endGame, style: { float: 'left' } },
-                        'close'
+                        'h1',
+                        { align: 'center' },
+                        'Attention!'
                     ),
                     React.createElement(
-                        'ons-button',
-                        { onClick: this.nextQuestion, style: { float: 'right' } },
-                        'Next'
+                        'p',
+                        { align: 'center' },
+                        'No questions for this spot are provided.'
+                    ),
+                    React.createElement(
+                        'div',
+                        null,
+                        React.createElement(
+                            'ons-button',
+                            { modifier: 'large', style: { float: 'center' }, onClick: this.endGame },
+                            'close'
+                        )
                     )
-                )
-            );
+                );
+            }
         } else {
             // render to show scoreboard at the end of the questionnaire
+            let highscore = this.state.newScore;
+            if (this.state.scores[this.state.selectedSpot] !== undefined && this.state.scores[this.state.selectedSpot] > highscore) {
+                highscore = this.state.scores[this.state.selectedSpot];
+            }
             return React.createElement(
                 'div',
                 null,
@@ -93794,8 +93821,8 @@ class Prompt extends React.Component {
                     React.createElement(
                         'p',
                         { align: 'center' },
-                        'Your new score for this spot is: ',
-                        this.state.newScore,
+                        'Your highscore for this spot is: ',
+                        highscore,
                         '.'
                     )
                 ),
@@ -93804,7 +93831,7 @@ class Prompt extends React.Component {
                     null,
                     React.createElement(
                         'ons-button',
-                        { onClick: this.endGame, style: { float: 'right' }, modifier: 'large' },
+                        { onClick: this.endGame, style: { float: 'center' }, modifier: 'large' },
                         'finish'
                     )
                 )
@@ -93817,7 +93844,7 @@ module.exports = {
     Prompt: Prompt
 };
 
-},{"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":364,"react":357,"react-bootstrap/lib/Button":304,"react-onsenui":354}],371:[function(require,module,exports){
+},{"../business_components/logger.js":360,"../data_components/config.json":362,"../data_components/layers.json":363,"react":357,"react-bootstrap/lib/Button":304,"react-onsenui":354}],370:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -94057,4 +94084,4 @@ module.exports = {
     settingsComponent: settingsComponent
 };
 
-},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"react":357,"react-onsenui":354}]},{},[365]);
+},{"../business_components/locationManager.js":359,"../business_components/logger.js":360,"react":357,"react-onsenui":354}]},{},[364]);

@@ -28,6 +28,8 @@ function createFile() {
 
     //return a promise of the file, that is created or found
     return new Promise(function (resolve, reject) {
+        console.log('\n\n\n#########');
+        console.log(filename);
         //check for the file system ready
         fs.deviceready.then(function () {
             fs.create(filename + '.csv').then(function success(result) {

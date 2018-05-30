@@ -6,7 +6,8 @@ const CordovaPromiseFS = require('cordova-promise-fs');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
-const gamescore = require('../data_components/gamescore.json');
+// const gamescore = require('/home/torben/Documents/gamescore.json');
+// const gamescore = require('../data_components/gamescore.json');
 //ui
 const prompt = require('./prompt.js');
 //logic
@@ -200,31 +201,24 @@ class Map extends React.Component {
      * Function to set state for starting gameing prompt and read scores from gamescore.json
      */
     handleStartGame() {
-        // read file (gamescore) to get previously saved points
+
         this.setState({
             showPopup: true,
             score: 0,
-            scores: gamescore
+            scores: localStorage
         });
     }
 
     /**
-     * Function to add new score to the gamescore.json file to save score
+     * Function to add new score to the local storage to save score
      * @param {Object} obj object containing selected spot, highest amount of points (compared current game to previously saved points) and content fo gamescore.json
      */
     handleEndGame(obj) {
         let spot = obj.spot;
         let score = obj.newScore;
-        const filePath = '../src/data_components/gamescore.json';
         obj.scores[spot] = score;
-        
-        // add new score to file
-        fs.write(filePath, obj.scores).then(function success(value) {
-            console.log('File successfully written');
-        }, function error(err) {
-            console.log('Error writing file: ' + err);
-        });
-
+        // add score to local storage (save score)
+        localStorage.setItem(spot, score);
         this.setState({showPopup: false});
     }
 

@@ -112,18 +112,18 @@ class App extends React.Component {
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
         const titles = ['About', 'Map', 'Streetview', 'Settings', 'Help'];
-        if (this.state.gamemode === true) {
-            return (
-                <Ons.Toolbar>
-                    <div className='left'><ons-button style={{background:'green', color:'white'}} id="startGame" onClick={() => { this.startGamingMode.handleStartGame(); }} type="button">Play</ons-button></div>
-                    <div className='center'>{titles[this.state.index]}</div>
-                    <div className='right'>
-                        <Ons.ToolbarButton onClick={this.show}>
-                            <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
-                        </Ons.ToolbarButton>
-                    </div>
-                </Ons.Toolbar>
-            )
+        if (this.state.gamemode === true && titles[this.state.index] === 'Map') {
+                return (
+                    <Ons.Toolbar>
+                        <div className='left'><ons-button style={{background:'green', color:'white'}} id="startGame" onClick={() => { this.startGamingMode.handleStartGame(); }} type="button">Play</ons-button></div>
+                        <div className='center'>{titles[this.state.index]}</div>
+                        <div className='right'>
+                            <Ons.ToolbarButton onClick={this.show}>
+                                <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
+                            </Ons.ToolbarButton>
+                        </div>
+                    </Ons.Toolbar>
+                )
         } else {
             return (
                 <Ons.Toolbar>
