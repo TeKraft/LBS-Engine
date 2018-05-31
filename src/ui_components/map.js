@@ -56,6 +56,13 @@ class Map extends React.Component {
             iconAnchor: [25, 48],
             popupAnchor: [-3, -76]
         });
+        //code added:Akhil - different icon for marker
+        this.friendMarker = L.icon({
+            iconUrl: 'img/friend.png',
+            iconSize: [50, 50],
+            iconAnchor: [25, 48],
+            popupAnchor: [-3, -76]
+        });
 
     }
 

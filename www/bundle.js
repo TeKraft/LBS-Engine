@@ -106936,242 +106936,619 @@ module.exports={
 }
 },{}],364:[function(require,module,exports){
 module.exports={
-    "T-spots": {
-        "type": "marker",
-        "items": [
-            {
-                "coords": [
-                    51.963886,
-                    7.610546
-                ],
-                "name": "Botanical Garden",
-                "popup": "Botanical Garden",
-                "qset": [
-                  {
-                      "Question":"When was the botanical garden built?",
-                      "Options":[
-                        {"A":"1800"},
-                        {"B":"1813"},
-                        {"C":"1803"},
-                        {"D":"1795"}
-                      ],
-                      "Answer":"C"
-                    },
-                    {
-                      "Question":"In 1990's what feature was added to the garden?",
-                      "Options":[
-                        {"A":"Stream"},
-                        {"B":"Pond"},
-                        {"C":"Medicinal greenhouse"},
-                        {"D":"Nothing"}
-                      ],
-                      "Answer":"A"
-                    },
-                    {
-                      "Question":"How many of the 280 known Pelargonium species are present in the garden?",
-                      "Options":[
-                        {"A":"15"},
-                        {"B":"230"},
-                        {"C":"275"},
-                        {"D":"140"}
-                      ],
-                      "Answer":"B"
-                    },
-                    {
-                      "Question":"The Bromeliad house contains pineapple plants from which part of the world?",
-                      "Options":[
-                        {"A":"Nordic region"},
-                        {"B":"Central Africa"},
-                        {"C":"South-east Asia"},
-                        {"D":"South and Central America"}
-                      ],
-                      "Answer":"D"
-                    },
-                    {
-                      "Question":"What is the spaciality of the Farntal area?",
-                      "Options":[
-                        {"A":"Mountain plants"},
-                        {"B":"Rock roses and olive"},
-                        {"C":"Plants from grasslands"},
-                        {"D":"Ferns"}
-                      ],
-                      "Answer":"D"
-                    }
-                ]
-            },
-            {
-                "coords": [
-                    51.962900,
-                    7.629437
-                ],
-                "name": "St. Lamberti Church",
-                "popup": "St. Lamberti Church",
-                "qset":[
-                  {
-                      "Question":"When was the Church built?",
-                      "Options":[
-                        {"A":"1275"},
-                        {"B":"1375"},
-                        {"C":"1475"},
-                        {"D":"1575"}
-                      ],
-                      "Answer":"B"
-                      },
-                      {
-                      "Question":"Who financed the building of Church?",
-                      "Options":[
-                        {"A":"Merchents of the city"},
-                        {"B":"Duke of Paris"},
-                        {"C":"Vatican"},
-                        {"D":"Governer of Muensterland"}
-                      ],
-                      "Answer":"A"
-                      },
-                      {
-                      "Question":"What hangs at the tower of the church?",
-                      "Options":[
-                        {"A":"3 wooden buckets"},
-                        {"B":"3 cooper swords"},
-                        {"C":"3 iron baskets"},
-                        {"D":"3 cooper bells"}
-                      ],
-                      "Answer":"C"
-                      },
-                      {
-                      "Question":"Who's representation lies on the west facade of the church?",
-                      "Options":[
-                        {"A":"Bernhard Knipperdolling"},
-                        {"B":"Johann Wolfgang von Goethe"},
-                        {"C":"Jan van Leiden"},
-                        {"D":"Friedrich Schiller"}
-                      ],
-                      "Answer":"B"
-                      },
-                      {
-                      "Question":"What landmark is to the east of church?",
-                      "Options":[
-                        {"A":"Domplatz"},
-                        {"B":"Lambertikirchplatz"},
-                        {"C":"Rye market"},
-                        {"D":"Old fish market"}
-                      ],
-                      "Answer":"D"
-                      }
-                ]
-            },
-            {
-                "coords": [
-                    51.948110,
-                    7.587544
-                ],
-                "name": "All-weather Zoo",
-                "popup": "All-weather Zoo",
-                "qset":[
-                  {
-                      "Question":"When was the current All-weather zoo built?",
-                      "Options":[
-                        {"A":"1972"},
-                        {"B":"1973"},
-                        {"C":"1974"},
-                        {"D":"1975"}
-                      ],
-                      "Answer":"C"
-                      },
-                      {
-                      "Question":"Who is the current zoo director?",
-                      "Options":[
-                        {"A":"H. Jörg Adler"},
-                        {"B":"Helmut Reichling"},
-                        {"C":"Hermann Landois"},
-                        {"D":"Thomas Wilms"}
-                      ],
-                      "Answer":"D"
-                      },
-                      {
-                      "Question":"What category of animals share the joint top count with Fish as of start of 2016?",
-                      "Options":[
-                        {"A":"Invertebrates"},
-                        {"B":"Amphibia"},
-                        {"C":"Birds"},
-                        {"D":"Reptilies"}
-                      ],
-                      "Answer":"A"
-                      },
-                      {
-                      "Question":"What is major attraction at the Robben Haven show?",
-                      "Options":[
-                        {"A":"California Sea Lions"},
-                        {"B":"Westphalian Horses"},
-                        {"C":"Asian Elephants"},
-                        {"D":"Penguin"}
-                      ],
-                      "Answer":"A"
-                      },
-                      {
-                      "Question":"What are Lories?",
-                      "Options":[
-                        {"A":"Penguin"},
-                        {"B":"Elephants"},
-                        {"C":"Vultures"},
-                        {"D":"Parrots"}
-                      ],
-                      "Answer":"D"
-                      }
-                ]
-            },
-            {
-                "coords": [
-                    51.960801,
-                    7.624331
-                ],
-                "name": "LWL Cultural Museum",
-                "popup": "LWL Cultural Museum",
-                "qset": [
-                  {}
-                ]
-            }
-        ]
-    },
-    "T-Zones": {
-        "type":"zone",
-        "items":[
-            {
-                "center":[
-                    51.963886,
-                    7.610546
-                ],
-                "radius":200,
-                "name": "Botanical Garden zone"
-            },
-            {
-                "center":[
-                  51.962900,
-                  7.629437
-                ],
-                "radius":200,
-                "name": "St. Lamberti Church"
-            },
-            {
-                "center":[
-                  51.948110,
-                  7.587544
-                ],
-                "radius":200,
-                "name": "All-weather Zoo"
-            },
-            {
-                "center":[
-                  51.960801,
-                  7.624331
-                ],
-                "radius":200,
-                "name": "LWL Cultural Museum"
-            }
-        ]
-    }
+   "friend": [
+     {
+       "name": "sam99",
+         "showme": "T",
+         "location": [
+           51.965,
+           7.610546
+         ]
+     },
+     {
+       "name": "traveller1",
+         "showme": "F",
+         "location": [
+           51.9642,
+           7.630546
+         ]
+     },
+     {
+       "name": "JoyReise",
+         "showme": "T",
+         "location": [
+           51.9622,
+           7.630136
+         ]
+     },
+     {
+       "name": "NightSky",
+         "showme": "T",
+         "location": [
+           51.9602,
+           7.625136
+         ]
+     },
+     {
+       "name": "Hans",
+         "showme": "F",
+         "location": [
+           51.948110,
+           7.585136
+         ]
+     },
+     {
+       "name": "guide007",
+         "showme": "F",
+         "location": [
+           51.947110,
+           7.589136
+         ]
+     },
+     {
+         "name": "luggage",
+         "showme": "T",
+         "location": [
+           51.947120,
+           7.589176
+         ]
+     }
+   ]
 }
-
 },{}],365:[function(require,module,exports){
+module.exports={
+   "T-spots":{
+      "type":"marker",
+      "items":[
+         {
+            "coords":[
+               51.963886,
+               7.610546
+            ],
+            "name":"Botanical Garden",
+            "popup":"Botanical Garden",
+            "qset":[
+               {
+                  "Question":"When was the botanical garden built?",
+                  "Options":[
+                     {
+                        "A":"1800"
+                     },
+                     {
+                        "B":"1813"
+                     },
+                     {
+                        "C":"1803"
+                     },
+                     {
+                        "D":"1795"
+                     }
+                  ],
+                  "Answer":"C"
+               },
+               {
+                  "Question":"In 1990's what feature was added to the garden?",
+                  "Options":[
+                     {
+                        "A":"Stream"
+                     },
+                     {
+                        "B":"Pond"
+                     },
+                     {
+                        "C":"Medicinal greenhouse"
+                     },
+                     {
+                        "D":"Nothing"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"How many of the 280 known Pelargonium species are present in the garden?",
+                  "Options":[
+                     {
+                        "A":"15"
+                     },
+                     {
+                        "B":"230"
+                     },
+                     {
+                        "C":"275"
+                     },
+                     {
+                        "D":"140"
+                     }
+                  ],
+                  "Answer":"B"
+               },
+               {
+                  "Question":"The Bromeliad house contains pineapple plants from which part of the world?",
+                  "Options":[
+                     {
+                        "A":"Nordic region"
+                     },
+                     {
+                        "B":"Central Africa"
+                     },
+                     {
+                        "C":"South-east Asia"
+                     },
+                     {
+                        "D":"South and Central America"
+                     }
+                  ],
+                  "Answer":"D"
+               },
+               {
+                  "Question":"What is the spaciality of the Farntal area?",
+                  "Options":[
+                     {
+                        "A":"Mountain plants"
+                     },
+                     {
+                        "B":"Rock roses and olive"
+                     },
+                     {
+                        "C":"Plants from grasslands"
+                     },
+                     {
+                        "D":"Ferns"
+                     }
+                  ],
+                  "Answer":"D"
+               }
+            ]
+         },
+         {
+            "coords":[
+               51.962900,
+               7.629437
+            ],
+            "name":"St. Lamberti Church",
+            "popup":"St. Lamberti Church",
+            "qset":[
+               {
+                  "Question":"When was the Church built?",
+                  "Options":[
+                     {
+                        "A":"1275"
+                     },
+                     {
+                        "B":"1375"
+                     },
+                     {
+                        "C":"1475"
+                     },
+                     {
+                        "D":"1575"
+                     }
+                  ],
+                  "Answer":"B"
+               },
+               {
+                  "Question":"Who financed the building of Church?",
+                  "Options":[
+                     {
+                        "A":"Merchents of the city"
+                     },
+                     {
+                        "B":"Duke of Paris"
+                     },
+                     {
+                        "C":"Vatican"
+                     },
+                     {
+                        "D":"Governer of Muensterland"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"What hangs at the tower of the church?",
+                  "Options":[
+                     {
+                        "A":"3 wooden buckets"
+                     },
+                     {
+                        "B":"3 cooper swords"
+                     },
+                     {
+                        "C":"3 iron baskets"
+                     },
+                     {
+                        "D":"3 cooper bells"
+                     }
+                  ],
+                  "Answer":"C"
+               },
+               {
+                  "Question":"Who's representation lies on the west facade of the church?",
+                  "Options":[
+                     {
+                        "A":"Bernhard Knipperdolling"
+                     },
+                     {
+                        "B":"Johann Wolfgang von Goethe"
+                     },
+                     {
+                        "C":"Jan van Leiden"
+                     },
+                     {
+                        "D":"Friedrich Schiller"
+                     }
+                  ],
+                  "Answer":"B"
+               },
+               {
+                  "Question":"What landmark is to the east of church?",
+                  "Options":[
+                     {
+                        "A":"Domplatz"
+                     },
+                     {
+                        "B":"Lambertikirchplatz"
+                     },
+                     {
+                        "C":"Rye market"
+                     },
+                     {
+                        "D":"Old fish market"
+                     }
+                  ],
+                  "Answer":"D"
+               }
+            ]
+         },
+         {
+            "coords":[
+               51.948110,
+               7.587544
+            ],
+            "name":"All-weather Zoo",
+            "popup":"All-weather Zoo",
+            "qset":[
+               {
+                  "Question":"When was the current All-weather zoo built?",
+                  "Options":[
+                     {
+                        "A":"1972"
+                     },
+                     {
+                        "B":"1973"
+                     },
+                     {
+                        "C":"1974"
+                     },
+                     {
+                        "D":"1975"
+                     }
+                  ],
+                  "Answer":"C"
+               },
+               {
+                  "Question":"Who is the current zoo director?",
+                  "Options":[
+                     {
+                        "A":"H. Jörg Adler"
+                     },
+                     {
+                        "B":"Helmut Reichling"
+                     },
+                     {
+                        "C":"Hermann Landois"
+                     },
+                     {
+                        "D":"Thomas Wilms"
+                     }
+                  ],
+                  "Answer":"D"
+               },
+               {
+                  "Question":"What category of animals share the joint top count with Fish as of start of 2016?",
+                  "Options":[
+                     {
+                        "A":"Invertebrates"
+                     },
+                     {
+                        "B":"Amphibia"
+                     },
+                     {
+                        "C":"Birds"
+                     },
+                     {
+                        "D":"Reptilies"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"What is major attraction at the Robben Haven show?",
+                  "Options":[
+                     {
+                        "A":"California Sea Lions"
+                     },
+                     {
+                        "B":"Westphalian Horses"
+                     },
+                     {
+                        "C":"Asian Elephants"
+                     },
+                     {
+                        "D":"Penguin"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"What are Lories?",
+                  "Options":[
+                     {
+                        "A":"Penguin"
+                     },
+                     {
+                        "B":"Elephants"
+                     },
+                     {
+                        "C":"Vultures"
+                     },
+                     {
+                        "D":"Parrots"
+                     }
+                  ],
+                  "Answer":"D"
+               }
+            ]
+         },
+         {
+            "coords":[
+               51.960801,
+               7.624331
+            ],
+            "name":"LWL Cultural Museum",
+            "popup":"LWL Cultural Museum",
+            "qset":[
+               {
+                  "Question":"Which artist from Die Bruke movement does the museum specializes on?",
+                  "Options":[
+                     {
+                        "A":"Erich Heckel"
+                     },
+                     {
+                        "B":"August Macke"
+                     },
+                     {
+                        "C":"Fritz Bleyl"
+                     },
+                     {
+                        "D":"Emil Nolde"
+                     }
+                  ],
+                  "Answer":"B"
+               },
+               {
+                  "Question":"Which kind of painting does the museum has an extensive collection of?",
+                  "Options":[
+                     {
+                        "A":"Byzantine"
+                     },
+                     {
+                        "B":"fresco"
+                     },
+                     {
+                        "C":"Romanesque"
+                     },
+                     {
+                        "D":"spätgotik"
+                     }
+                  ],
+                  "Answer":"D"
+               },
+               {
+                  "Question":"When is the museum entry free for students?",
+                  "Options":[
+                     {
+                        "A":"Every 1st day of month"
+                     },
+                     {
+                        "B":"Every last weekend of month"
+                     },
+                     {
+                        "C":"Every second friday of month"
+                     },
+                     {
+                        "D":"All days"
+                     }
+                  ],
+                  "Answer":"C"
+               },
+               {
+                  "Question":"Which section is present in west wing of first floor of the museum?",
+                  "Options":[
+                     {
+                        "A":"Modern contemporary art"
+                     },
+                     {
+                        "B":"Roman christian paintings"
+                     },
+                     {
+                        "C":"Paintings focused of Peace"
+                     },
+                     {
+                        "D":"None of the above"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"What is the count of inventory in the museum library?",
+                  "Options":[
+                     {
+                        "A":"100,000"
+                     },
+                     {
+                        "B":"130,000"
+                     },
+                     {
+                        "C":"90,000"
+                     },
+                     {
+                        "D":"190,000"
+                     }
+                  ],
+                  "Answer":"B"
+               }
+            ]
+         },
+         {
+            "coords":[
+               51.956902,
+               7.618507
+            ],
+            "name":"Aasee-Giant Pool Balls",
+            "popup":"Aasee-Giant Pool Balls",
+            "qset":[
+               {
+                  "Question":"?",
+                  "Options":[
+                     {
+                        "A":"1972"
+                     },
+                     {
+                        "B":"1973"
+                     },
+                     {
+                        "C":"1974"
+                     },
+                     {
+                        "D":"1975"
+                     }
+                  ],
+                  "Answer":"C"
+               },
+               {
+                  "Question":"What was Petra who visited Aasee in 2006?",
+                  "Options":[
+                     {
+                        "A":"Black Swan"
+                     },
+                     {
+                        "B":"Black Crane"
+                     },
+                     {
+                        "C":"Black Kite"
+                     },
+                     {
+                        "D":"Crow"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"What did the artist Wilm Weppelmann installed at Aasee?",
+                  "Options":[
+                     {
+                        "A":"Floating baloons"
+                     },
+                     {
+                        "B":"Floating status of Elephant"
+                     },
+                     {
+                        "C":"Floating vegetable garden"
+                     },
+                     {
+                        "D":"Floating replica of Dom"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"When did the lake got its current day structure?",
+                  "Options":[
+                     {
+                        "A":"1944"
+                     },
+                     {
+                        "B":"1930"
+                     },
+                     {
+                        "C":"1919"
+                     },
+                     {
+                        "D":"1934"
+                     }
+                  ],
+                  "Answer":"D"
+               },
+               {
+                  "Question":"Name of the vehicle bridge on Aasee?",
+                  "Options":[
+                     {
+                        "A":"Tormin"
+                     },
+                     {
+                        "B":"Tomin"
+                     },
+                     {
+                        "C":"Tronim"
+                     },
+                     {
+                        "D":"Tromim"
+                     }
+                  ],
+                  "Answer":"A"
+               }
+            ]
+         }
+      ]
+   },
+   "T-Zones":{
+      "type":"zone",
+      "items":[
+         {
+            "center":[
+               51.963886,
+               7.610546
+            ],
+            "radius":200,
+            "name":"Botanical Garden zone"
+         },
+         {
+            "center":[
+               51.962900,
+               7.629437
+            ],
+            "radius":200,
+            "name":"St. Lamberti Church"
+         },
+         {
+            "center":[
+               51.948110,
+               7.587544
+            ],
+            "radius":200,
+            "name":"All-weather Zoo"
+         },
+         {
+            "center":[
+               51.960801,
+               7.624331
+            ],
+            "radius":200,
+            "name":"LWL Cultural Museum"
+         },
+         {
+            "center":[
+               51.956902,
+               7.618507
+            ],
+            "radius":200,
+            "name":"Aasee-Giant Pool Balls"
+         }
+      ]
+   }
+}
+},{}],366:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -107184,7 +107561,7 @@ ons.ready(function () {
     ReactDOM.render(React.createElement(app.App, null), document.getElementById('root'));
 });
 
-},{"./ui_components/app.js":366,"onsenui":297,"react":358,"react-dom":312}],366:[function(require,module,exports){
+},{"./ui_components/app.js":367,"onsenui":297,"react":358,"react-dom":312}],367:[function(require,module,exports){
 "use strict";
 
 const React = require('react');
@@ -107583,7 +107960,7 @@ module.exports = {
     App: App
 };
 
-},{"../business_components/locationManager.js":360,"../business_components/logger.js":361,"../data_components/config.json":363,"../data_components/layers.json":364,"./embededSite.js":367,"./map.js":368,"./pictureView.js":369,"./settings.js":372,"react":358,"react-onsenui":355}],367:[function(require,module,exports){
+},{"../business_components/locationManager.js":360,"../business_components/logger.js":361,"../data_components/config.json":363,"../data_components/layers.json":365,"./embededSite.js":368,"./map.js":369,"./pictureView.js":370,"./settings.js":373,"react":358,"react-onsenui":355}],368:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -107611,7 +107988,7 @@ module.exports = {
     EmbededComponent: EmbededComponent
 };
 
-},{"react":358}],368:[function(require,module,exports){
+},{"react":358}],369:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -107621,6 +107998,7 @@ const CordovaPromiseFS = require('cordova-promise-fs');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+const friends = require('../data_components/friend.json');
 //ui
 const prompt = require('./prompt.js');
 //logic
@@ -107666,6 +108044,13 @@ class Map extends React.Component {
         //code added:Akhil - different icon for marker
         this.tSpotMarker = L.icon({
             iconUrl: 'img/koffer.png',
+            iconSize: [50, 50],
+            iconAnchor: [25, 48],
+            popupAnchor: [-3, -76]
+        });
+        //code added:Akhil - different icon for marker
+        this.friendMarker = L.icon({
+            iconUrl: 'img/friend.png',
             iconSize: [50, 50],
             iconAnchor: [25, 48],
             popupAnchor: [-3, -76]
@@ -107867,6 +108252,41 @@ class Map extends React.Component {
     //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
     addLayers() {
         var mapLayers = [];
+        //adding friend layer
+        for (let friend in friends) {
+            var friendElement = [];
+            for (var i = 0; i < friends[friend].length; i++) {
+                console.log(friends[friend][i].name);
+                //if there is a popup, insert it into the map
+                if (friends[friend][i].showme === 'T') {
+                    console.log(friends[friend][i].showme);
+                    friendElement.push(React.createElement(
+                        leaflet.Marker,
+                        { position: friends[friend][i].location, key: friends[friend], icon: this.friendMarker },
+                        React.createElement(
+                            leaflet.Popup,
+                            null,
+                            React.createElement(
+                                'span',
+                                null,
+                                friends[friend][i].name
+                            )
+                        )
+                    ));
+                }
+            }
+            mapLayers.push(React.createElement(
+                leaflet.LayersControl.Overlay,
+                { key: friend,
+                    name: friend,
+                    checked: true },
+                React.createElement(
+                    leaflet.FeatureGroup,
+                    { key: friend },
+                    friendElement
+                )
+            ));
+        }
         for (let layer in layers) {
             var layerElement = [];
             //check if the layer is containing markers and add those
@@ -108033,7 +108453,7 @@ module.exports = {
     Map: Map
 };
 
-},{"../business_components/locationManager.js":360,"../business_components/logger.js":361,"../business_components/offlineLayer.js":362,"../data_components/config.json":363,"../data_components/layers.json":364,"./prompt.js":370,"./routing.js":371,"bluebird":15,"cordova-promise-fs":17,"react":358,"react-leaflet":343}],369:[function(require,module,exports){
+},{"../business_components/locationManager.js":360,"../business_components/logger.js":361,"../business_components/offlineLayer.js":362,"../data_components/config.json":363,"../data_components/friend.json":364,"../data_components/layers.json":365,"./prompt.js":371,"./routing.js":372,"bluebird":15,"cordova-promise-fs":17,"react":358,"react-leaflet":343}],370:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -108098,7 +108518,7 @@ module.exports = {
     PictureView: PictureView
 };
 
-},{"../data_components/config.json":363,"./map.js":368,"react":358,"react-onsenui":355}],370:[function(require,module,exports){
+},{"../data_components/config.json":363,"./map.js":369,"react":358,"react-onsenui":355}],371:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -108426,7 +108846,7 @@ module.exports = {
     Prompt: Prompt
 };
 
-},{"../business_components/logger.js":361,"../data_components/config.json":363,"../data_components/layers.json":364,"react":358,"react-bootstrap/lib/Button":305,"react-onsenui":355}],371:[function(require,module,exports){
+},{"../business_components/logger.js":361,"../data_components/config.json":363,"../data_components/layers.json":365,"react":358,"react-bootstrap/lib/Button":305,"react-onsenui":355}],372:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -108614,7 +109034,7 @@ module.exports = {
     RoutingMachine: RoutingMachine
 };
 
-},{"leaflet":114,"leaflet-routing-machine":113,"react":358,"react-leaflet":343}],372:[function(require,module,exports){
+},{"leaflet":114,"leaflet-routing-machine":113,"react":358,"react-leaflet":343}],373:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -108854,4 +109274,4 @@ module.exports = {
     settingsComponent: settingsComponent
 };
 
-},{"../business_components/locationManager.js":360,"../business_components/logger.js":361,"react":358,"react-onsenui":355}]},{},[365]);
+},{"../business_components/locationManager.js":360,"../business_components/logger.js":361,"react":358,"react-onsenui":355}]},{},[366]);
