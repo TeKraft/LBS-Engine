@@ -6,6 +6,7 @@ const CordovaPromiseFS = require('cordova-promise-fs');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+const friends = require('../data_components/friend.json');
 //ui
 const prompt = require('./prompt.js');
 //logic
@@ -255,6 +256,31 @@ class Map extends React.Component {
     //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
     addLayers() {
         var mapLayers = [];
+               //adding friend layer
+        for (let friend in friends){
+            var friendElement = [];
+            for (var i = 0; i < friends[friend].length; i++) {
+                console.log(friends[friend][i].name)
+                //if there is a popup, insert it into the map
+                if(friends[friend][i].showme === 'T') {
+                    console.log(friends[friend][i].showme)
+                    friendElement.push(<leaflet.Marker position={friends[friend][i].location} key={friends[friend]} icon={this.friendMarker}>
+                        <leaflet.Popup>
+                            <span>
+                                {friends[friend][i].name}
+                            </span>
+                        </leaflet.Popup>
+                        </leaflet.Marker>)
+                }
+            }
+            mapLayers.push(<leaflet.LayersControl.Overlay key={friend}
+                                                        name={friend}
+                                                        checked={true}>
+                                                        <leaflet.FeatureGroup key={friend}>
+                                                            {friendElement}
+                                                        </leaflet.FeatureGroup>
+                            </leaflet.LayersControl.Overlay>)
+        }
         for (let layer in layers) {
             var layerElement = [];
             //check if the layer is containing markers and add those
