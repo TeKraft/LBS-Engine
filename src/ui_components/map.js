@@ -6,14 +6,13 @@ const CordovaPromiseFS = require('cordova-promise-fs');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
-// const gamescore = require('/home/torben/Documents/gamescore.json');
-// const gamescore = require('../data_components/gamescore.json');
 //ui
 const prompt = require('./prompt.js');
 //logic
 const locationManager = require('../business_components/locationManager.js');
 const logger = require('../business_components/logger.js');
 const OfflineLayer = require('../business_components/offlineLayer.js');
+const RoutingMachine = require('./routing.js');
 
 //setup for cordova promise fs
 var fs = CordovaPromiseFS({
@@ -114,7 +113,38 @@ class Map extends React.Component {
         },
         { enableHighAccuracy: true, timeout: 500, maximumAge: 1000, distanceFilter: 1 },    // timeout: 20000
         );
+
+        // this.handleRouting();
     }
+
+    // handleRouting() {
+    //     console.log(this.refs);
+    //     let map = this.refs.map.leafletElement;
+    //     let from = this.state.position;
+    //     let to = [51.960801, 7.624331];
+    //     let routeControl = L.Routing.control({
+    //         waypoints: [
+    //             L.latLng(from[0], from[1]),
+    //             L.latLng(to[0], to[1]),
+    //         ],
+    //         lineOptions: {
+    //             // styles: [{ color: '#000', opacity: 0.8, weight: 6 }]
+    //         },
+    //         addWaypoints: false,
+    //         draggableWaypoints: false
+    //         });
+            
+    //         routeControl.addTo(map);
+
+    //         console.log(routeControl);
+    //         routeControl.show();
+    //         routeControl.hide();
+
+    //         // .leaflet-control-container .leaflet-routing-container-hide {
+    //         //     display: none;
+    //         // }
+    //         // console.log(document.getElementsByClassName('leaflet-control-container-hide'));
+    //     }
 
     componentWillUnmount() {
         navigator.geolocation.clearWatch(this.watchId);
@@ -291,7 +321,7 @@ class Map extends React.Component {
                 zoomDelta={this.props.zoomable == false ? 0 : 1}
                 onOverlayadd={this.handleOverlayadd}
                 onOverlayremove={this.handleOverlayremove}
-                ref={(ref) => {this.map = ref;}}>
+                ref='map'>
                 <OfflineLayer.OfflineLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -348,7 +378,7 @@ class Map extends React.Component {
                             zoomControl={this.props.zoomable}
                             scrollWheelZoom={this.props.zoomable}
                             zoomDelta={this.props.zoomable == false ? 0 : 1}
-                            ref={(ref) => {this.map = ref;}}>
+                            ref='map'> 
                             <OfflineLayer.OfflineLayer
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -363,6 +393,7 @@ class Map extends React.Component {
                                 )}
                         </leaflet.Map>
                 )
+                // {(map) => this.map = map}
             }
         }
     }
