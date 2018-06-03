@@ -253,6 +253,7 @@ class Map extends React.Component {
      * @param {Object} obj object containing selected spot, highest amount of points (compared current game to previously saved points) and content fo gamescore.json
      */
     handleEndGame(obj) {
+        console.log(obj);
         let spot = obj.spot;
         let score = obj.newScore;
         obj.scores[spot] = score;

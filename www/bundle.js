@@ -107996,6 +107996,7 @@ class Game extends React.Component {
         super(props);
         console.log(this.props);
         this.endGame = this.endGame.bind(this);
+        this.closeGame = this.closeGame.bind(this);
         this.nextQuestion = this.nextQuestion.bind(this);
         this.selectSpot = this.selectSpot.bind(this);
         this.submitSpot = this.submitSpot.bind(this);
@@ -108024,7 +108025,31 @@ class Game extends React.Component {
     }
 
     /**
-     * Function to close the Prompt component and return to the map
+     * Function to close the Game component and return to the map without saving the score.
+     */
+    closeGame() {
+        if (this.state.selectedSpot !== null) {
+            if (this.state.selectedSpot !== null) {
+                let scoreboard = {
+                    spot: this.state.selectedSpot,
+                    newScore: 0,
+                    scores: this.state.scores
+                };
+
+                try {
+                    this.props.onEndGameChange(scoreboard);
+                    this.setState({ selected: false });
+                } catch (e) {
+                    console.log('Error:\n' + e);
+                }
+            }
+        } else {
+            alert('Attention!\nPlease select a spot before closing the game.');
+        }
+    }
+
+    /**
+     * Function to close the Game component and return to the map with saving the score.
      */
     endGame() {
         let score = this.state.newScore;
@@ -108229,7 +108254,7 @@ class Game extends React.Component {
                     null,
                     React.createElement(
                         'ons-button',
-                        { onClick: this.endGame, style: { float: 'left' } },
+                        { onClick: this.closeGame, style: { float: 'left' } },
                         'close'
                     ),
                     React.createElement(
@@ -108271,7 +108296,7 @@ class Game extends React.Component {
                         null,
                         React.createElement(
                             'ons-button',
-                            { onClick: this.endGame, style: { float: 'left' } },
+                            { onClick: this.closeGame, style: { float: 'left' } },
                             'close'
                         ),
                         React.createElement(
@@ -108610,6 +108635,7 @@ class Map extends React.Component {
      * @param {Object} obj object containing selected spot, highest amount of points (compared current game to previously saved points) and content fo gamescore.json
      */
     handleEndGame(obj) {
+        console.log(obj);
         let spot = obj.spot;
         let score = obj.newScore;
         obj.scores[spot] = score;

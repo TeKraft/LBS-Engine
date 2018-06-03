@@ -15,6 +15,7 @@ class Game extends React.Component {
         super(props);
         console.log(this.props);
         this.endGame = this.endGame.bind(this);
+        this.closeGame = this.closeGame.bind(this);
         this.nextQuestion = this.nextQuestion.bind(this);
         this.selectSpot = this.selectSpot.bind(this);
         this.submitSpot = this.submitSpot.bind(this);
@@ -44,7 +45,31 @@ class Game extends React.Component {
     }
 
     /**
-     * Function to close the Prompt component and return to the map
+     * Function to close the Game component and return to the map without saving the score.
+     */
+    closeGame() {
+        if (this.state.selectedSpot !== null) {
+            if (this.state.selectedSpot !== null) {
+                let scoreboard = {
+                    spot: this.state.selectedSpot,
+                    newScore: 0,
+                    scores: this.state.scores
+                };
+    
+                try {
+                    this.props.onEndGameChange(scoreboard);
+                    this.setState({selected: false});
+                } catch(e) {
+                    console.log('Error:\n' + e);
+                }
+            }
+        } else {
+            alert('Attention!\nPlease select a spot before closing the game.');
+        }
+    }
+
+    /**
+     * Function to close the Game component and return to the map with saving the score.
      */
     endGame() {
         let score = this.state.newScore;
@@ -66,7 +91,6 @@ class Game extends React.Component {
                 console.log('Error:\n' + e);
             }
         }
-
     }
 
     /**
@@ -233,7 +257,7 @@ class Game extends React.Component {
                         </div>
                     </div>
                     <div>
-                        <ons-button onClick={this.endGame} style={{float: 'left'}}>close</ons-button>
+                        <ons-button onClick={this.closeGame} style={{float: 'left'}}>close</ons-button>
                         <ons-button onClick={this.selectSpot} style={{float: 'right'}}>Submit</ons-button>
                     </div>
                 </div>
@@ -254,7 +278,7 @@ class Game extends React.Component {
                             {listOfAnswers}
                         </div>
                         <div>
-                            <ons-button onClick={this.endGame} style={{float: 'left'}}>close</ons-button>
+                            <ons-button onClick={this.closeGame} style={{float: 'left'}}>close</ons-button>
                             <ons-button onClick={this.nextQuestion} style={{float: 'right'}}>Next</ons-button>
                         </div>
                     </div>
