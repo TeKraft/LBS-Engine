@@ -108277,7 +108277,7 @@ class Game extends React.Component {
                     React.createElement(
                         'ons-button',
                         { onClick: this.closeGame, style: { float: 'left' } },
-                        'close'
+                        'Abort'
                     ),
                     React.createElement(
                         'ons-button',
@@ -108319,7 +108319,7 @@ class Game extends React.Component {
                         React.createElement(
                             'ons-button',
                             { onClick: this.closeGame, style: { float: 'left' } },
-                            'close'
+                            'Abort'
                         ),
                         React.createElement(
                             'ons-button',
@@ -108348,7 +108348,7 @@ class Game extends React.Component {
                         React.createElement(
                             'ons-button',
                             { modifier: 'large', style: { float: 'center' }, onClick: this.endGame },
-                            'close'
+                            'Close'
                         )
                     )
                 );
@@ -108391,7 +108391,7 @@ class Game extends React.Component {
                     React.createElement(
                         'ons-button',
                         { onClick: this.endGame, style: { float: 'center' }, modifier: 'large' },
-                        'finish'
+                        'Finish'
                     )
                 )
             );

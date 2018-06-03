@@ -260,7 +260,7 @@ class Game extends React.Component {
                         </div>
                     </div>
                     <div>
-                        <ons-button onClick={this.closeGame} style={{float: 'left'}}>close</ons-button>
+                        <ons-button onClick={this.closeGame} style={{float: 'left'}}>Abort</ons-button>
                         <ons-button onClick={this.selectSpot} style={{float: 'right'}}>Submit</ons-button>
                     </div>
                 </div>
@@ -281,7 +281,7 @@ class Game extends React.Component {
                             {listOfAnswers}
                         </div>
                         <div>
-                            <ons-button onClick={this.closeGame} style={{float: 'left'}}>close</ons-button>
+                            <ons-button onClick={this.closeGame} style={{float: 'left'}}>Abort</ons-button>
                             <ons-button onClick={this.nextQuestion} style={{float: 'right'}}>Next</ons-button>
                         </div>
                     </div>
@@ -292,7 +292,7 @@ class Game extends React.Component {
                         <h1 align='center'>Attention!</h1>
                         <p align='center'>No questions for this spot are provided.</p>
                         <div>
-                            <ons-button modifier='large' style={{float: 'center'}} onClick={this.endGame}>close</ons-button>
+                            <ons-button modifier='large' style={{float: 'center'}} onClick={this.endGame}>Close</ons-button>
                         </div>
                     </div>
                 )
@@ -311,7 +311,7 @@ class Game extends React.Component {
                         <p align='center'>Your highscore for this spot is: {highscore}.</p>
                     </div>
                     <div>
-                        <ons-button onClick={this.endGame} style={{float: 'center'}} modifier='large'>finish</ons-button>
+                        <ons-button onClick={this.endGame} style={{float: 'center'}} modifier='large'>Finish</ons-button>
                     </div>
                 </div>
             )
