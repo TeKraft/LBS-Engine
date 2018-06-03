@@ -1,8 +1,8 @@
 {
-   "friend": [
+   "friends": [
      {
        "name": "sam99",
-         "showme": "T",
+         "showme": true,
          "location": [
            51.965,
            7.610546
@@ -10,15 +10,11 @@
      },
      {
        "name": "traveller1",
-         "showme": "F",
-         "location": [
-           51.9642,
-           7.630546
-         ]
+         "showme": false
      },
      {
        "name": "JoyReise",
-         "showme": "T",
+         "showme": true,
          "location": [
            51.9622,
            7.630136
@@ -26,7 +22,7 @@
      },
      {
        "name": "NightSky",
-         "showme": "T",
+         "showme": true,
          "location": [
            51.9602,
            7.625136
@@ -34,23 +30,15 @@
      },
      {
        "name": "Hans",
-         "showme": "F",
-         "location": [
-           51.948110,
-           7.585136
-         ]
+         "showme": false
      },
      {
        "name": "guide007",
-         "showme": "F",
-         "location": [
-           51.947110,
-           7.589136
-         ]
+         "showme": false
      },
      {
          "name": "luggage",
-         "showme": "T",
+         "showme": true,
          "location": [
            51.947120,
            7.589176

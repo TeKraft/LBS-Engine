@@ -106931,15 +106931,16 @@ module.exports={
         "zoomable": true,
         "draggable": true,
         "zoom": 20,
-        "gamemode": false
+        "gamemode": false,
+        "circleRange": 0.2
     }
 }
 },{}],364:[function(require,module,exports){
 module.exports={
-   "friend": [
+   "friends": [
      {
        "name": "sam99",
-         "showme": "T",
+         "showme": true,
          "location": [
            51.965,
            7.610546
@@ -106947,15 +106948,11 @@ module.exports={
      },
      {
        "name": "traveller1",
-         "showme": "F",
-         "location": [
-           51.9642,
-           7.630546
-         ]
+         "showme": false
      },
      {
        "name": "JoyReise",
-         "showme": "T",
+         "showme": true,
          "location": [
            51.9622,
            7.630136
@@ -106963,7 +106960,7 @@ module.exports={
      },
      {
        "name": "NightSky",
-         "showme": "T",
+         "showme": true,
          "location": [
            51.9602,
            7.625136
@@ -106971,23 +106968,15 @@ module.exports={
      },
      {
        "name": "Hans",
-         "showme": "F",
-         "location": [
-           51.948110,
-           7.585136
-         ]
+         "showme": false
      },
      {
        "name": "guide007",
-         "showme": "F",
-         "location": [
-           51.947110,
-           7.589136
-         ]
+         "showme": false
      },
      {
          "name": "luggage",
-         "showme": "T",
+         "showme": true,
          "location": [
            51.947120,
            7.589176
@@ -107960,7 +107949,7 @@ module.exports = {
     App: App
 };
 
-},{"../business_components/locationManager.js":360,"../business_components/logger.js":361,"../data_components/config.json":363,"../data_components/layers.json":365,"./embededSite.js":368,"./map.js":369,"./pictureView.js":370,"./settings.js":373,"react":358,"react-onsenui":355}],368:[function(require,module,exports){
+},{"../business_components/locationManager.js":360,"../business_components/logger.js":361,"../data_components/config.json":363,"../data_components/layers.json":365,"./embededSite.js":368,"./map.js":370,"./pictureView.js":371,"./settings.js":373,"react":358,"react-onsenui":355}],368:[function(require,module,exports){
 'use strict';
 
 const React = require('react');
@@ -107992,546 +107981,17 @@ module.exports = {
 'use strict';
 
 const React = require('react');
-const leaflet = require('react-leaflet');
-const CordovaPromiseFS = require('cordova-promise-fs');
-//custom files required
-//data
-const config = require('../data_components/config.json');
-const layers = require('../data_components/layers.json');
-const friends = require('../data_components/friend.json');
-//ui
-const prompt = require('./prompt.js');
-//logic
-const locationManager = require('../business_components/locationManager.js');
-const logger = require('../business_components/logger.js');
-const OfflineLayer = require('../business_components/offlineLayer.js');
-const RoutingMachine = require('./routing.js');
-
-//setup for cordova promise fs
-var fs = CordovaPromiseFS({
-    persistent: true, // or false
-    storageSize: 20 * 1024 * 1024, // storage size in bytes, default 20MB
-    concurrency: 3, // how many concurrent uploads/downloads?
-    Promise: require('bluebird') // Your favorite Promise/A+ library!
-});
-
-class Map extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.addLayers = this.addLayers.bind(this);
-        this.renderMapWithLayers = this.renderMapWithLayers.bind(this);
-        this.handleOverlayadd = this.handleOverlayadd.bind(this);
-        this.handleOverlayremove = this.handleOverlayremove.bind(this);
-        this.handleChangeGameMode = this.handleChangeGameMode.bind(this);
-        this.handleEndGame = this.handleEndGame.bind(this);
-        //get the settings from the config file
-        this.state = {
-            position: config.map.center,
-            zoom: config.map.zoom,
-            hasLocation: false,
-            showPopup: false,
-            spotsInRange: [],
-            positionInfo: 'Enable GPS to see your location.' // set to default, because if the GPS location is disabled there won't be data to show
-
-            //marker symbol for the "you are here" marker
-        };this.positionMarker = L.icon({
-            iconUrl: 'img/man.png',
-            iconSize: [50, 50],
-            iconAnchor: [25, 48],
-            popupAnchor: [-3, -76]
-        });
-        //code added:Akhil - different icon for marker
-        this.tSpotMarker = L.icon({
-            iconUrl: 'img/koffer.png',
-            iconSize: [50, 50],
-            iconAnchor: [25, 48],
-            popupAnchor: [-3, -76]
-        });
-        //code added:Akhil - different icon for marker
-        this.friendMarker = L.icon({
-            iconUrl: 'img/friend.png',
-            iconSize: [50, 50],
-            iconAnchor: [25, 48],
-            popupAnchor: [-3, -76]
-        });
-    }
-
-    /**
-     * Insert the gps location of the user into the map, if the gps-setting is true.
-     * Update location and keep zoom level as soon as the user moves.
-     */
-    componentDidMount() {
-        var that = this;
-        locationManager.getLocation().then(function success(position) {
-            var pos = [];
-            pos.push(position.latitude);
-            pos.push(position.longitude);
-            if (that.props.gps) {
-                that.setState({
-                    position: pos,
-                    hasLocation: true
-                });
-            }
-        });
-
-        // Update location and keep current zoom level as soon as movement begins. Distancefilter is set to 1 meter
-        that.watchID = navigator.geolocation.watchPosition(function success(position) {
-            if (that.map) {
-                var zoomLvl = that.map.leafletElement.getZoom();
-            } else {
-                var zoomLvl = config.map.zoom;
-            }
-            var msg = `zoom: ${zoomLvl}, lat: ${position.coords.latitude}, lng: ${position.coords.longitude} .`;
-            var curPos = [position.coords.latitude, position.coords.longitude];
-            if (that.props.gps) {
-                that.setState({
-                    position: curPos,
-                    positionInfo: msg,
-                    zoom: zoomLvl
-                });
-                var spotsInRange = [];
-                var spots = layers['T-spots'].items;
-                for (let i in spots) {
-                    var dist = that.calcDistance(curPos, spots[i].coords);
-                    if (dist <= 0.2) {
-                        spotsInRange.push(spots[i].name);
-                    }
-                }
-                that.setState({ spotsInRange: spotsInRange });
-                if (spotsInRange.length > 0) {
-                    that.handleChangeGameMode(true);
-                } else {
-                    that.handleChangeGameMode(false);
-                }
-            }
-            console.log(`GPS location set - ${msg}`);
-        }, function error(err) {
-            console.log(err);
-            console.log("error watching location");
-        }, { enableHighAccuracy: true, timeout: 500, maximumAge: 1000, distanceFilter: 1 } // timeout: 20000
-        );
-
-        // this.handleRouting();
-    }
-
-    // handleRouting() {
-    //     console.log(this.refs);
-    //     let map = this.refs.map.leafletElement;
-    //     let from = this.state.position;
-    //     let to = [51.960801, 7.624331];
-    //     let routeControl = L.Routing.control({
-    //         waypoints: [
-    //             L.latLng(from[0], from[1]),
-    //             L.latLng(to[0], to[1]),
-    //         ],
-    //         lineOptions: {
-    //             // styles: [{ color: '#000', opacity: 0.8, weight: 6 }]
-    //         },
-    //         addWaypoints: false,
-    //         draggableWaypoints: false
-    //         });
-
-    //         routeControl.addTo(map);
-
-    //         console.log(routeControl);
-    //         routeControl.show();
-    //         routeControl.hide();
-
-    //         // .leaflet-control-container .leaflet-routing-container-hide {
-    //         //     display: none;
-    //         // }
-    //         // console.log(document.getElementsByClassName('leaflet-control-container-hide'));
-    //     }
-
-    componentWillUnmount() {
-        navigator.geolocation.clearWatch(this.watchId);
-    }
-
-    /**
-     * Calculate the distance in km of two provided points
-     * @param {Array} latlng1 first point - [latitude, longitude]
-     * @param {Array} latlng2 second point - [latitude, longitude]
-     */
-    calcDistance(latlng1, latlng2) {
-        // Deg --> Rad
-        var lat1 = latlng1[0] * Math.PI / 180;
-        var lat2 = latlng2[0] * Math.PI / 180;
-        var lng1 = latlng1[1] * Math.PI / 180;
-        var lng2 = latlng2[1] * Math.PI / 180;
-        // distance calculation:
-        var cosG = Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1);
-        var dist = 6378.388 * Math.acos(cosG);
-        return dist;
-    }
-
-    /**
-     * Write a log that notes the change of active layers
-     * @param {boolean} change If the layer was added or removed
-     * @param {String} data Name of the layer that was toggled
-     */
-    createLog(change, data) {
-        var action;
-        var that = this;
-        if (this.props.logging) {
-            //define the log
-            if (change) {
-                action = 'Activate ' + data;
-            } else action = 'Deactivate ' + data;
-            var entry;
-            //get the current position for the log
-            locationManager.getLocation().then(function success(position) {
-                entry = [position.latitude, position.longitude, that.props.picture ? 'Streetview' : 'Map', action];
-                //log the data
-                logger.logEntry(entry);
-            }, function error(err) {
-                //if there was an error getting the position, log a '-' for lat/lng
-                entry = ['-', '-', that.props.picture ? 'Streetview' : 'Map', action];
-                //log the data
-                logger.logEntry(entry);
-            });
-        }
-    }
-
-    /**
-     * Handle the activation of a layer on the map
-     * @param {Object} e Layer Object fired by leaflet
-     */
-    handleOverlayadd(e) {
-
-        this.createLog(true, e.name);
-    }
-
-    /**
-     * Handle the deactivation of a layer on the map
-     * @param {Object} e Layer Object fired by leaflet
-     */
-    handleOverlayremove(e) {
-
-        this.createLog(false, e.name);
-    }
-
-    /**
-     * Handle the (de-)activation of game mode. Change visibility of the play button
-     * @param {boolean} bool boolean set to true if game mode is possible (because user is in range of a spot)
-     */
-    handleChangeGameMode(bool) {
-        try {
-            this.props.onGameModeChange(bool);
-        } catch (e) {
-            console.log('Error:\n' + e);
-        }
-        this.createLog('GameMode', bool);
-    }
-
-    /**
-     * Function to set state for starting gameing prompt and read scores from gamescore.json
-     */
-    handleStartGame() {
-
-        this.setState({
-            showPopup: true,
-            score: 0,
-            scores: localStorage
-        });
-    }
-
-    /**
-     * Function to add new score to the local storage to save score
-     * @param {Object} obj object containing selected spot, highest amount of points (compared current game to previously saved points) and content fo gamescore.json
-     */
-    handleEndGame(obj) {
-        let spot = obj.spot;
-        let score = obj.newScore;
-        obj.scores[spot] = score;
-        // add score to local storage (save score)
-        localStorage.setItem(spot, score);
-        this.setState({ showPopup: false });
-    }
-
-    //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
-    addLayers() {
-        var mapLayers = [];
-        //adding friend layer
-        for (let friend in friends) {
-            var friendElement = [];
-            for (var i = 0; i < friends[friend].length; i++) {
-                console.log(friends[friend][i].name);
-                //if there is a popup, insert it into the map
-                if (friends[friend][i].showme === 'T') {
-                    console.log(friends[friend][i].showme);
-                    friendElement.push(React.createElement(
-                        leaflet.Marker,
-                        { position: friends[friend][i].location, key: friends[friend], icon: this.friendMarker },
-                        React.createElement(
-                            leaflet.Popup,
-                            null,
-                            React.createElement(
-                                'span',
-                                null,
-                                friends[friend][i].name
-                            )
-                        )
-                    ));
-                }
-            }
-            mapLayers.push(React.createElement(
-                leaflet.LayersControl.Overlay,
-                { key: friend,
-                    name: friend,
-                    checked: true },
-                React.createElement(
-                    leaflet.FeatureGroup,
-                    { key: friend },
-                    friendElement
-                )
-            ));
-        }
-        for (let layer in layers) {
-            var layerElement = [];
-            //check if the layer is containing markers and add those
-            if (layers[layer].type == 'marker') {
-                for (var i = 0; i < layers[layer].items.length; i++) {
-                    //if there is a popup, insert it into the map
-                    if (layers[layer].items[i].popup != undefined) {
-                        layerElement.push(React.createElement(
-                            leaflet.Marker,
-                            { position: layers[layer].items[i].coords, key: layers[layer].items[i].name, icon: this.tSpotMarker },
-                            React.createElement(
-                                leaflet.Popup,
-                                null,
-                                React.createElement(
-                                    'span',
-                                    null,
-                                    layers[layer].items[i].popup
-                                )
-                            )
-                        ));
-                    } else {
-                        layerElement.push(React.createElement(leaflet.Marker, { position: layers[layer].items[i].coords, key: layers[layer].items[i].name, icon: this.tSpotMarker }));
-                    }
-                }
-            }
-            //Akhil:else it is a zone
-            else if (layers[layer].type == 'zone') {
-                    for (var i = 0; i < layers[layer].items.length; i++) {
-                        layerElement.push(React.createElement(leaflet.Circle, { center: layers[layer].items[i].center, color: layers[layer].items[i].color, radius: layers[layer].items[i].radius,
-                            key: layers[layer].items[i].name }));
-                    }
-                }
-                //else it is a route
-                else if (layers[layer].type == 'route') {
-                        layerElement.push(React.createElement(leaflet.Polyline, { positions: layers[layer].coords, color: 'red', key: layers[layer].name }));
-                    }
-            mapLayers.push(React.createElement(
-                leaflet.LayersControl.Overlay,
-                { key: layer,
-                    name: layer,
-                    checked: true },
-                React.createElement(
-                    leaflet.FeatureGroup,
-                    { key: layer },
-                    layerElement
-                )
-            ));
-        }
-        return mapLayers;
-    }
-
-    renderMapWithLayers() {
-        // check if the location is enabled and available
-        const marker = this.state.hasLocation && this.props.gps ? React.createElement(
-            leaflet.Marker,
-            { position: this.state.position, icon: this.positionMarker, ref: this.state.onChangeCurrPosition },
-            React.createElement(
-                leaflet.Popup,
-                null,
-                React.createElement(
-                    'span',
-                    null,
-                    this.state.positionInfo
-                )
-            )
-        ) : null;
-        return React.createElement(
-            leaflet.Map,
-            {
-                center: this.state.position,
-                zoom: this.state.zoom,
-                dragging: this.props.draggable,
-                zoomControl: this.props.zoomable,
-                scrollWheelZoom: this.props.zoomable,
-                zoomDelta: this.props.zoomable == false ? 0 : 1,
-                onOverlayadd: this.handleOverlayadd,
-                onOverlayremove: this.handleOverlayremove,
-                ref: 'map' },
-            React.createElement(OfflineLayer.OfflineLayer, {
-                url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                attribution: 'Map data \xA9 <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            }),
-            React.createElement(
-                leaflet.LayersControl,
-                { position: 'topleft' },
-                this.addLayers()
-            ),
-            React.createElement(OfflineLayer.OfflineControl, null),
-            marker
-        );
-    }
-
-    //render the map with the layerControl
-    render() {
-        if (this.state.showPopup === true) {
-            return React.createElement(prompt.Prompt, {
-                gps: this.state.position,
-                spots: this.state.spotsInRange,
-                numberOfQuestions: 0,
-                selected: false,
-                scores: this.state.scores,
-                score: this.state.score,
-                questionnaire: true,
-                onEndGameChange: this.handleEndGame
-            });
-        } else {
-            //if the layerControl is active, the map is rendered with the layercontrol
-            if (this.props.layerControl) {
-                return this.renderMapWithLayers();
-            } else {
-                // check if the location is enabled and available
-                const marker = this.state.hasLocation && this.props.gps ? React.createElement(
-                    leaflet.Marker,
-                    { position: this.state.position, icon: this.positionMarker, ref: this.state.onChangeCurrPosition },
-                    React.createElement(
-                        leaflet.Popup,
-                        null,
-                        React.createElement(
-                            'span',
-                            null,
-                            this.state.positionInfo
-                        )
-                    )
-                ) : null;
-                //return the map without any layers shown
-                return React.createElement(
-                    leaflet.Map,
-                    {
-                        center: this.state.position,
-                        zoom: this.state.zoom,
-                        dragging: this.props.draggable,
-                        zoomControl: this.props.zoomable,
-                        scrollWheelZoom: this.props.zoomable,
-                        zoomDelta: this.props.zoomable == false ? 0 : 1,
-                        ref: 'map' },
-                    React.createElement(OfflineLayer.OfflineLayer, {
-                        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        attribution: 'Map data \xA9 <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                    }),
-                    React.createElement(OfflineLayer.OfflineControl, null),
-                    this.state.markers.map((position, idx) => React.createElement(
-                        leaflet.Marker,
-                        { key: `marker-${idx}`, position: position },
-                        React.createElement(
-                            leaflet.Popup,
-                            null,
-                            React.createElement(
-                                'span',
-                                null,
-                                'A pretty CSS3 popup. ',
-                                React.createElement('br', null),
-                                ' Easily customizable.'
-                            )
-                        )
-                    ))
-                );
-                // {(map) => this.map = map}
-            }
-        }
-    }
-}
-
-module.exports = {
-    Map: Map
-};
-
-},{"../business_components/locationManager.js":360,"../business_components/logger.js":361,"../business_components/offlineLayer.js":362,"../data_components/config.json":363,"../data_components/friend.json":364,"../data_components/layers.json":365,"./prompt.js":371,"./routing.js":372,"bluebird":15,"cordova-promise-fs":17,"react":358,"react-leaflet":343}],370:[function(require,module,exports){
-'use strict';
-
-const React = require('react');
-const Ons = require('react-onsenui');
-
-//custom imports
-const map = require('./map.js');
-const config = require('../data_components/config.json');
-
-/**
- * Component for displaying the picture view. On top a picture is displayed and below a map.
- * The map is generated in the same way, it is defined in the config file.
- */
-class PictureView extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentImage: 0,
-            images: config.app.numberOfImages
-        };
-        this.handlePictureChange = this.handlePictureChange.bind(this);
-    }
-
-    //handle a change in the carousel
-    handlePictureChange(e) {
-        console.log(this.state.currentImage);
-        console.log(e.activeIndex);
-        this.setState({ currentImage: e.activeIndex });
-    }
-
-    render() {
-        const filepath = 'img/';
-        var images = [];
-        for (var i = 0; i < this.state.images; i++) {
-            var path = filepath + i + '.jpg';
-            images.push(path);
-        }
-        return React.createElement(
-            'div',
-            { className: 'center', style: { height: '100%' } },
-            React.createElement(
-                Ons.Carousel,
-                { onPostChange: this.handlePictureChange, index: this.state.currentImage, style: { width: '100%', height: '50%' }, swipeable: true, autoScroll: true },
-                images.map((image, index) => React.createElement(
-                    Ons.CarouselItem,
-                    { key: index },
-                    React.createElement('img', { style: { display: 'block', width: '100%' }, src: image })
-                ))
-            ),
-            React.createElement(
-                Ons.Row,
-                { style: { width: '100%', height: '50%' } },
-                React.createElement(map.Map, { picture: true, logging: this.props.logging, externalData: this.props.externalData, gps: this.props.gps, layerControl: this.props.layerControl,
-                    draggable: this.props.draggable, zoomable: this.props.zoomable })
-            )
-        );
-    }
-}
-
-module.exports = {
-    PictureView: PictureView
-};
-
-},{"../data_components/config.json":363,"./map.js":369,"react":358,"react-onsenui":355}],371:[function(require,module,exports){
-'use strict';
-
-const React = require('react');
 const Ons = require('react-onsenui');
 const Button = require('react-bootstrap/lib/Button');
 //custom files required
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+const friendsJSON = require('../data_components/friend.json');
 //logic
 const logger = require('../business_components/logger.js');
 
-class Prompt extends React.Component {
+class Game extends React.Component {
     constructor(props) {
         super(props);
         console.log(this.props);
@@ -108542,6 +108002,7 @@ class Prompt extends React.Component {
         this.submitAnswer = this.submitAnswer.bind(this);
 
         this.state = {
+            circleRange: config.map.circleRange,
             value: this.props.defaultValue,
             gps: this.props.gps,
             spots: this.props.spots,
@@ -108597,6 +108058,7 @@ class Prompt extends React.Component {
             let i = spots.findIndex(spot => spot.name === mySpot);
             if (i >= 0) {
                 this.state.qset = spots[i].qset;
+                this.state.spotCoords = spots[i].coords;
                 // TODO: check for score of selected spot
                 this.setState({
                     selected: true
@@ -108631,7 +108093,7 @@ class Prompt extends React.Component {
     }
 
     /**
-     * 
+     * Function to create a button for a spot.
      * @param {String} spot name of the spot 
      */
     makeSpotButton(spot) {
@@ -108643,7 +108105,8 @@ class Prompt extends React.Component {
     }
 
     /**
-     * 
+     * Function to create buttons of the answers.
+     * Differentiate when clicked between warning (orange) and success (green)
      * @param {Object} item object of a single answer [letter, value] 
      */
     makeAnswerButton(item) {
@@ -108667,7 +108130,52 @@ class Prompt extends React.Component {
     }
 
     /**
-     * 
+     * Function to check weather a friend is also in range of the spot,
+     * to add a point for each friend in range.
+     */
+    checkForFriends() {
+        let friends = friendsJSON['friends'];
+        let add = 0;
+        for (let friend in friends) {
+            if (friends[friend].showme) {
+                if (this.friendInRange(this.state.spotCoords, friends[friend].location)) {
+                    console.log('in range: ' + friends[friend].name);
+                    add += 1;
+                }
+            }
+        }
+        return add;
+    }
+
+    /**
+     * Function to return true, if a friend is also in range of a spot.
+     * @param {Array} spot lat, lon of location of the spot
+     * @param {Array} location lat, lon of location of a friend 
+     */
+    friendInRange(spot, location) {
+        let dist = this.calcDistance(spot, location);
+        return dist <= this.state.circleRange ? true : false;
+    }
+
+    /**
+     * Calculate the distance in km of two provided points.
+     * @param {Array} latlng1 first point - [latitude, longitude]
+     * @param {Array} latlng2 second point - [latitude, longitude]
+     */
+    calcDistance(latlng1, latlng2) {
+        // Deg --> Rad
+        var lat1 = latlng1[0] * Math.PI / 180;
+        var lat2 = latlng2[0] * Math.PI / 180;
+        var lng1 = latlng1[1] * Math.PI / 180;
+        var lng2 = latlng2[1] * Math.PI / 180;
+        // distance calculation:
+        var cosG = Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1);
+        var dist = 6378.388 * Math.acos(cosG);
+        return dist;
+    }
+
+    /**
+     * Function to add selected spot to state without re-rendering.
      * @param {String} spot name of selected spot 
      */
     submitSpot(spot) {
@@ -108675,15 +108183,17 @@ class Prompt extends React.Component {
     }
 
     /**
-     * 
+     * Function to add points to the score, when the question is submitted.
+     * Setting the state leads to re-rendering the Prompt to go to next question.
      * @param {Array} answer array containing letter and value of answer
      */
     submitAnswer(answer, event) {
         if (this.state.selectedAnswer === null) {
-            // this.state.selectedAnswer = answer; 
+            let friendsNearby = this.checkForFriends();
+            // this.state.selectedAnswer = answer;
             let points = 0;
             if (answer[0] === this.state.qset[this.state.numberOfQuestions - 1].Answer) {
-                points = 5;
+                points = 5 + friendsNearby;
             }
             let newScore = this.state.newScore + points;
             this.setState({
@@ -108843,10 +108353,539 @@ class Prompt extends React.Component {
 }
 
 module.exports = {
-    Prompt: Prompt
+    Game: Game
 };
 
-},{"../business_components/logger.js":361,"../data_components/config.json":363,"../data_components/layers.json":365,"react":358,"react-bootstrap/lib/Button":305,"react-onsenui":355}],372:[function(require,module,exports){
+},{"../business_components/logger.js":361,"../data_components/config.json":363,"../data_components/friend.json":364,"../data_components/layers.json":365,"react":358,"react-bootstrap/lib/Button":305,"react-onsenui":355}],370:[function(require,module,exports){
+'use strict';
+
+const React = require('react');
+const leaflet = require('react-leaflet');
+const CordovaPromiseFS = require('cordova-promise-fs');
+//custom files required
+//data
+const config = require('../data_components/config.json');
+const layers = require('../data_components/layers.json');
+const friends = require('../data_components/friend.json');
+//ui
+const game = require('./game.js');
+//logic
+const locationManager = require('../business_components/locationManager.js');
+const logger = require('../business_components/logger.js');
+const OfflineLayer = require('../business_components/offlineLayer.js');
+const RoutingMachine = require('./routing.js');
+
+//setup for cordova promise fs
+var fs = CordovaPromiseFS({
+    persistent: true, // or false
+    storageSize: 20 * 1024 * 1024, // storage size in bytes, default 20MB
+    concurrency: 3, // how many concurrent uploads/downloads?
+    Promise: require('bluebird') // Your favorite Promise/A+ library!
+});
+
+class Map extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.addLayers = this.addLayers.bind(this);
+        this.renderMapWithLayers = this.renderMapWithLayers.bind(this);
+        this.handleOverlayadd = this.handleOverlayadd.bind(this);
+        this.handleOverlayremove = this.handleOverlayremove.bind(this);
+        this.handleChangeGameMode = this.handleChangeGameMode.bind(this);
+        this.handleEndGame = this.handleEndGame.bind(this);
+        //get the settings from the config file
+        this.state = {
+            circleRange: config.map.circleRange,
+            position: config.map.center,
+            zoom: config.map.zoom,
+            hasLocation: false,
+            showPopup: false,
+            spotsInRange: [],
+            positionInfo: 'Enable GPS to see your location.' // set to default, because if the GPS location is disabled there won't be data to show
+
+            //marker symbol for the "you are here" marker
+        };this.positionMarker = L.icon({
+            iconUrl: 'img/man.png',
+            iconSize: [50, 50],
+            iconAnchor: [25, 48],
+            popupAnchor: [-3, -76]
+        });
+        //code added:Akhil - different icon for marker
+        this.tSpotMarker = L.icon({
+            iconUrl: 'img/koffer.png',
+            iconSize: [50, 50],
+            iconAnchor: [25, 48],
+            popupAnchor: [-3, -76]
+        });
+        //code added:Akhil - different icon for marker
+        this.friendMarker = L.icon({
+            iconUrl: 'img/friend.png',
+            iconSize: [50, 50],
+            iconAnchor: [25, 48],
+            popupAnchor: [-3, -76]
+        });
+    }
+
+    /**
+     * Insert the gps location of the user into the map, if the gps-setting is true.
+     * Update location and keep zoom level as soon as the user moves.
+     */
+    componentDidMount() {
+        var that = this;
+        locationManager.getLocation().then(function success(position) {
+            var pos = [];
+            pos.push(position.latitude);
+            pos.push(position.longitude);
+            if (that.props.gps) {
+                that.setState({
+                    position: pos,
+                    hasLocation: true
+                });
+            }
+        });
+
+        // Update location and keep current zoom level as soon as movement begins. Distancefilter is set to 1 meter
+        that.watchID = navigator.geolocation.watchPosition(function success(position) {
+            if (that.map) {
+                var zoomLvl = that.map.leafletElement.getZoom();
+            } else {
+                var zoomLvl = config.map.zoom;
+            }
+            var msg = `zoom: ${zoomLvl}, lat: ${position.coords.latitude}, lng: ${position.coords.longitude} .`;
+            var curPos = [position.coords.latitude, position.coords.longitude];
+            if (that.props.gps) {
+                that.setState({
+                    position: curPos,
+                    positionInfo: msg,
+                    zoom: zoomLvl
+                });
+                var spotsInRange = [];
+                var spots = layers['T-spots'].items;
+                for (let i in spots) {
+                    var dist = that.calcDistance(curPos, spots[i].coords);
+                    if (dist <= that.state.circleRange) {
+                        spotsInRange.push(spots[i].name);
+                    }
+                }
+                that.setState({ spotsInRange: spotsInRange });
+                if (spotsInRange.length > 0) {
+                    that.handleChangeGameMode(true);
+                } else {
+                    that.handleChangeGameMode(false);
+                }
+            }
+            console.log(`GPS location set - ${msg}`);
+        }, function error(err) {
+            console.log(err);
+            console.log("error watching location");
+        }, { enableHighAccuracy: true, timeout: 500, maximumAge: 1000, distanceFilter: 1 } // timeout: 20000
+        );
+
+        // this.handleRouting();
+    }
+
+    // handleRouting() {
+    //     console.log(this.refs);
+    //     let map = this.refs.map.leafletElement;
+    //     let from = this.state.position;
+    //     let to = [51.960801, 7.624331];
+    //     let routeControl = L.Routing.control({
+    //         waypoints: [
+    //             L.latLng(from[0], from[1]),
+    //             L.latLng(to[0], to[1]),
+    //         ],
+    //         lineOptions: {
+    //             // styles: [{ color: '#000', opacity: 0.8, weight: 6 }]
+    //         },
+    //         addWaypoints: false,
+    //         draggableWaypoints: false
+    //         });
+
+    //         routeControl.addTo(map);
+
+    //         console.log(routeControl);
+    //         routeControl.show();
+    //         routeControl.hide();
+
+    //         // .leaflet-control-container .leaflet-routing-container-hide {
+    //         //     display: none;
+    //         // }
+    //         // console.log(document.getElementsByClassName('leaflet-control-container-hide'));
+    //     }
+
+    componentWillUnmount() {
+        navigator.geolocation.clearWatch(this.watchId);
+    }
+
+    /**
+     * Calculate the distance in km of two provided points
+     * @param {Array} latlng1 first point - [latitude, longitude]
+     * @param {Array} latlng2 second point - [latitude, longitude]
+     */
+    calcDistance(latlng1, latlng2) {
+        // Deg --> Rad
+        var lat1 = latlng1[0] * Math.PI / 180;
+        var lat2 = latlng2[0] * Math.PI / 180;
+        var lng1 = latlng1[1] * Math.PI / 180;
+        var lng2 = latlng2[1] * Math.PI / 180;
+        // distance calculation:
+        var cosG = Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1);
+        var dist = 6378.388 * Math.acos(cosG);
+        return dist;
+    }
+
+    /**
+     * Write a log that notes the change of active layers
+     * @param {boolean} change If the layer was added or removed
+     * @param {String} data Name of the layer that was toggled
+     */
+    createLog(change, data) {
+        var action;
+        var that = this;
+        if (this.props.logging) {
+            //define the log
+            if (change) {
+                action = 'Activate ' + data;
+            } else action = 'Deactivate ' + data;
+            var entry;
+            //get the current position for the log
+            locationManager.getLocation().then(function success(position) {
+                entry = [position.latitude, position.longitude, that.props.picture ? 'Streetview' : 'Map', action];
+                //log the data
+                logger.logEntry(entry);
+            }, function error(err) {
+                //if there was an error getting the position, log a '-' for lat/lng
+                entry = ['-', '-', that.props.picture ? 'Streetview' : 'Map', action];
+                //log the data
+                logger.logEntry(entry);
+            });
+        }
+    }
+
+    /**
+     * Handle the activation of a layer on the map
+     * @param {Object} e Layer Object fired by leaflet
+     */
+    handleOverlayadd(e) {
+
+        this.createLog(true, e.name);
+    }
+
+    /**
+     * Handle the deactivation of a layer on the map
+     * @param {Object} e Layer Object fired by leaflet
+     */
+    handleOverlayremove(e) {
+
+        this.createLog(false, e.name);
+    }
+
+    /**
+     * Handle the (de-)activation of game mode. Change visibility of the play button
+     * @param {boolean} bool boolean set to true if game mode is possible (because user is in range of a spot)
+     */
+    handleChangeGameMode(bool) {
+        try {
+            this.props.onGameModeChange(bool);
+        } catch (e) {
+            console.log('Error:\n' + e);
+        }
+        this.createLog('GameMode', bool);
+    }
+
+    /**
+     * Function to set state for starting gaming prompt and read scores from gamescore.json
+     */
+    handleStartGame() {
+
+        this.setState({
+            showPopup: true,
+            score: 0,
+            scores: localStorage
+        });
+    }
+
+    /**
+     * Function to add new score to the local storage to save score
+     * @param {Object} obj object containing selected spot, highest amount of points (compared current game to previously saved points) and content fo gamescore.json
+     */
+    handleEndGame(obj) {
+        let spot = obj.spot;
+        let score = obj.newScore;
+        obj.scores[spot] = score;
+        // add score to local storage (save score)
+        localStorage.setItem(spot, score);
+        this.setState({ showPopup: false });
+    }
+
+    //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
+    addLayers() {
+        var mapLayers = [];
+        //adding friend layer
+        for (let friend in friends) {
+            var friendElement = [];
+            for (var i = 0; i < friends[friend].length; i++) {
+                //if there is a popup, insert it into the map
+                if (friends[friend][i].showme) {
+                    friendElement.push(React.createElement(
+                        leaflet.Marker,
+                        { position: friends[friend][i].location, key: friends[friend][i].name, icon: this.friendMarker },
+                        React.createElement(
+                            leaflet.Popup,
+                            null,
+                            React.createElement(
+                                'span',
+                                null,
+                                friends[friend][i].name
+                            )
+                        )
+                    ));
+                }
+            }
+            mapLayers.push(React.createElement(
+                leaflet.LayersControl.Overlay,
+                { key: friend,
+                    name: friend,
+                    checked: true },
+                React.createElement(
+                    leaflet.FeatureGroup,
+                    { key: friend },
+                    friendElement
+                )
+            ));
+        }
+        for (let layer in layers) {
+            var layerElement = [];
+            //check if the layer is containing markers and add those
+            if (layers[layer].type == 'marker') {
+                for (var i = 0; i < layers[layer].items.length; i++) {
+                    //if there is a popup, insert it into the map
+                    if (layers[layer].items[i].popup != undefined) {
+                        layerElement.push(React.createElement(
+                            leaflet.Marker,
+                            { position: layers[layer].items[i].coords, key: layers[layer].items[i].name, icon: this.tSpotMarker },
+                            React.createElement(
+                                leaflet.Popup,
+                                null,
+                                React.createElement(
+                                    'span',
+                                    null,
+                                    layers[layer].items[i].popup
+                                )
+                            )
+                        ));
+                    } else {
+                        layerElement.push(React.createElement(leaflet.Marker, { position: layers[layer].items[i].coords, key: layers[layer].items[i].name, icon: this.tSpotMarker }));
+                    }
+                }
+            }
+            //Akhil:else it is a zone
+            else if (layers[layer].type == 'zone') {
+                    for (var i = 0; i < layers[layer].items.length; i++) {
+                        layerElement.push(React.createElement(leaflet.Circle, { center: layers[layer].items[i].center, color: layers[layer].items[i].color, radius: config.map.circleRange * 1000,
+                            key: layers[layer].items[i].name }));
+                    }
+                }
+                //else it is a route
+                else if (layers[layer].type == 'route') {
+                        layerElement.push(React.createElement(leaflet.Polyline, { positions: layers[layer].coords, color: 'red', key: layers[layer].name }));
+                    }
+            mapLayers.push(React.createElement(
+                leaflet.LayersControl.Overlay,
+                { key: layer,
+                    name: layer,
+                    checked: true },
+                React.createElement(
+                    leaflet.FeatureGroup,
+                    { key: layer },
+                    layerElement
+                )
+            ));
+        }
+        return mapLayers;
+    }
+
+    renderMapWithLayers() {
+        // check if the location is enabled and available
+        const marker = this.state.hasLocation && this.props.gps ? React.createElement(
+            leaflet.Marker,
+            { position: this.state.position, icon: this.positionMarker, ref: this.state.onChangeCurrPosition },
+            React.createElement(
+                leaflet.Popup,
+                null,
+                React.createElement(
+                    'span',
+                    null,
+                    this.state.positionInfo
+                )
+            )
+        ) : null;
+        return React.createElement(
+            leaflet.Map,
+            {
+                center: this.state.position,
+                zoom: this.state.zoom,
+                dragging: this.props.draggable,
+                zoomControl: this.props.zoomable,
+                scrollWheelZoom: this.props.zoomable,
+                zoomDelta: this.props.zoomable == false ? 0 : 1,
+                onOverlayadd: this.handleOverlayadd,
+                onOverlayremove: this.handleOverlayremove,
+                ref: 'map' },
+            React.createElement(OfflineLayer.OfflineLayer, {
+                url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                attribution: 'Map data \xA9 <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            }),
+            React.createElement(
+                leaflet.LayersControl,
+                { position: 'topleft' },
+                this.addLayers()
+            ),
+            React.createElement(OfflineLayer.OfflineControl, null),
+            marker
+        );
+    }
+
+    //render the map with the layerControl
+    render() {
+        if (this.state.showPopup === true) {
+            return React.createElement(game.Game, {
+                gps: this.state.position,
+                spots: this.state.spotsInRange,
+                numberOfQuestions: 0,
+                selected: false,
+                scores: this.state.scores,
+                score: this.state.score,
+                questionnaire: true,
+                onEndGameChange: this.handleEndGame
+            });
+        } else {
+            //if the layerControl is active, the map is rendered with the layercontrol
+            if (this.props.layerControl) {
+                return this.renderMapWithLayers();
+            } else {
+                // check if the location is enabled and available
+                const marker = this.state.hasLocation && this.props.gps ? React.createElement(
+                    leaflet.Marker,
+                    { position: this.state.position, icon: this.positionMarker, ref: this.state.onChangeCurrPosition },
+                    React.createElement(
+                        leaflet.Popup,
+                        null,
+                        React.createElement(
+                            'span',
+                            null,
+                            this.state.positionInfo
+                        )
+                    )
+                ) : null;
+                //return the map without any layers shown
+                return React.createElement(
+                    leaflet.Map,
+                    {
+                        center: this.state.position,
+                        zoom: this.state.zoom,
+                        dragging: this.props.draggable,
+                        zoomControl: this.props.zoomable,
+                        scrollWheelZoom: this.props.zoomable,
+                        zoomDelta: this.props.zoomable == false ? 0 : 1,
+                        ref: 'map' },
+                    React.createElement(OfflineLayer.OfflineLayer, {
+                        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        attribution: 'Map data \xA9 <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    }),
+                    React.createElement(OfflineLayer.OfflineControl, null),
+                    this.state.markers.map((position, idx) => React.createElement(
+                        leaflet.Marker,
+                        { key: `marker-${idx}`, position: position },
+                        React.createElement(
+                            leaflet.Popup,
+                            null,
+                            React.createElement(
+                                'span',
+                                null,
+                                'A pretty CSS3 popup. ',
+                                React.createElement('br', null),
+                                ' Easily customizable.'
+                            )
+                        )
+                    ))
+                );
+                // {(map) => this.map = map}
+            }
+        }
+    }
+}
+
+module.exports = {
+    Map: Map
+};
+
+},{"../business_components/locationManager.js":360,"../business_components/logger.js":361,"../business_components/offlineLayer.js":362,"../data_components/config.json":363,"../data_components/friend.json":364,"../data_components/layers.json":365,"./game.js":369,"./routing.js":372,"bluebird":15,"cordova-promise-fs":17,"react":358,"react-leaflet":343}],371:[function(require,module,exports){
+'use strict';
+
+const React = require('react');
+const Ons = require('react-onsenui');
+
+//custom imports
+const map = require('./map.js');
+const config = require('../data_components/config.json');
+
+/**
+ * Component for displaying the picture view. On top a picture is displayed and below a map.
+ * The map is generated in the same way, it is defined in the config file.
+ */
+class PictureView extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentImage: 0,
+            images: config.app.numberOfImages
+        };
+        this.handlePictureChange = this.handlePictureChange.bind(this);
+    }
+
+    //handle a change in the carousel
+    handlePictureChange(e) {
+        console.log(this.state.currentImage);
+        console.log(e.activeIndex);
+        this.setState({ currentImage: e.activeIndex });
+    }
+
+    render() {
+        const filepath = 'img/';
+        var images = [];
+        for (var i = 0; i < this.state.images; i++) {
+            var path = filepath + i + '.jpg';
+            images.push(path);
+        }
+        return React.createElement(
+            'div',
+            { className: 'center', style: { height: '100%' } },
+            React.createElement(
+                Ons.Carousel,
+                { onPostChange: this.handlePictureChange, index: this.state.currentImage, style: { width: '100%', height: '50%' }, swipeable: true, autoScroll: true },
+                images.map((image, index) => React.createElement(
+                    Ons.CarouselItem,
+                    { key: index },
+                    React.createElement('img', { style: { display: 'block', width: '100%' }, src: image })
+                ))
+            ),
+            React.createElement(
+                Ons.Row,
+                { style: { width: '100%', height: '50%' } },
+                React.createElement(map.Map, { picture: true, logging: this.props.logging, externalData: this.props.externalData, gps: this.props.gps, layerControl: this.props.layerControl,
+                    draggable: this.props.draggable, zoomable: this.props.zoomable })
+            )
+        );
+    }
+}
+
+module.exports = {
+    PictureView: PictureView
+};
+
+},{"../data_components/config.json":363,"./map.js":370,"react":358,"react-onsenui":355}],372:[function(require,module,exports){
 'use strict';
 
 const React = require('react');

@@ -11,6 +11,7 @@
         "zoomable": true,
         "draggable": true,
         "zoom": 20,
-        "gamemode": false
+        "gamemode": false,
+        "circleRange": 0.2
     }
 }

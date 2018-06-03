@@ -8,7 +8,7 @@ const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
 const friends = require('../data_components/friend.json');
 //ui
-const prompt = require('./prompt.js');
+const game = require('./game.js');
 //logic
 const locationManager = require('../business_components/locationManager.js');
 const logger = require('../business_components/logger.js');
@@ -35,6 +35,7 @@ class Map extends React.Component {
         this.handleEndGame = this.handleEndGame.bind(this);
         //get the settings from the config file
         this.state = {
+            circleRange: config.map.circleRange,
             position: config.map.center,
             zoom: config.map.zoom,
             hasLocation: false,
@@ -103,7 +104,7 @@ class Map extends React.Component {
                 var spots = layers['T-spots'].items;
                 for (let i in spots) {
                         var dist = that.calcDistance( curPos, spots[i].coords );
-                        if (dist <= 0.2) {
+                        if (dist <= that.state.circleRange) {
                             spotsInRange.push(spots[i].name);
                         }
                 }
@@ -236,7 +237,7 @@ class Map extends React.Component {
     }
 
     /**
-     * Function to set state for starting gameing prompt and read scores from gamescore.json
+     * Function to set state for starting gaming prompt and read scores from gamescore.json
      */
     handleStartGame() {
 
@@ -267,11 +268,9 @@ class Map extends React.Component {
         for (let friend in friends){
             var friendElement = [];
             for (var i = 0; i < friends[friend].length; i++) {
-                console.log(friends[friend][i].name)
                 //if there is a popup, insert it into the map
-                if(friends[friend][i].showme === 'T') {
-                    console.log(friends[friend][i].showme)
-                    friendElement.push(<leaflet.Marker position={friends[friend][i].location} key={friends[friend]} icon={this.friendMarker}>
+                if(friends[friend][i].showme) {
+                    friendElement.push(<leaflet.Marker position={friends[friend][i].location} key={friends[friend][i].name} icon={this.friendMarker}>
                         <leaflet.Popup>
                             <span>
                                 {friends[friend][i].name}
@@ -311,7 +310,7 @@ class Map extends React.Component {
             //Akhil:else it is a zone
             else if (layers[layer].type == 'zone'){
                 for (var i = 0; i < layers[layer].items.length; i++) {
-                    layerElement.push(<leaflet.Circle center={layers[layer].items[i].center} color={layers[layer].items[i].color} radius={layers[layer].items[i].radius}
+                    layerElement.push(<leaflet.Circle center={layers[layer].items[i].center} color={layers[layer].items[i].color} radius={config.map.circleRange*1000}
                                         key={layers[layer].items[i].name} />)
                 }
 
@@ -372,7 +371,7 @@ class Map extends React.Component {
     render() {
         if (this.state.showPopup === true) {
             return (
-                <prompt.Prompt
+                <game.Game
                     gps={this.state.position}
                     spots={this.state.spotsInRange}
                     numberOfQuestions={0}
@@ -382,7 +381,7 @@ class Map extends React.Component {
                     questionnaire={true}
                     onEndGameChange={this.handleEndGame}
                 >
-                </prompt.Prompt>
+                </game.Game>
             )
         } else {
             //if the layerControl is active, the map is rendered with the layercontrol

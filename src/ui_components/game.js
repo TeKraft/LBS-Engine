@@ -6,10 +6,11 @@ const Button = require('react-bootstrap/lib/Button');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+const friendsJSON = require('../data_components/friend.json');
 //logic
 const logger = require('../business_components/logger.js');
 
-class Prompt extends React.Component {
+class Game extends React.Component {
     constructor(props) {
         super(props);
         console.log(this.props);
@@ -20,6 +21,7 @@ class Prompt extends React.Component {
         this.submitAnswer = this.submitAnswer.bind(this);
 
         this.state = {
+            circleRange: config.map.circleRange,
             value: this.props.defaultValue,
             gps: this.props.gps,
             spots: this.props.spots,
@@ -77,6 +79,7 @@ class Prompt extends React.Component {
             let i = spots.findIndex((spot) => spot.name === mySpot);
             if (i >= 0) {
                 this.state.qset = spots[i].qset;
+                this.state.spotCoords = spots[i].coords;
                 // TODO: check for score of selected spot
                 this.setState({
                     selected: true
@@ -111,7 +114,7 @@ class Prompt extends React.Component {
     }
 
     /**
-     * 
+     * Function to create a button for a spot.
      * @param {String} spot name of the spot 
      */
     makeSpotButton(spot) {
@@ -121,7 +124,8 @@ class Prompt extends React.Component {
     }
 
     /**
-     * 
+     * Function to create buttons of the answers.
+     * Differentiate when clicked between warning (orange) and success (green)
      * @param {Object} item object of a single answer [letter, value] 
      */
     makeAnswerButton(item) {
@@ -143,7 +147,52 @@ class Prompt extends React.Component {
     }
 
     /**
-     * 
+     * Function to check weather a friend is also in range of the spot,
+     * to add a point for each friend in range.
+     */
+    checkForFriends() {
+        let friends = friendsJSON['friends'];
+        let add = 0;
+        for (let friend in friends) {
+            if (friends[friend].showme) {
+                if (this.friendInRange(this.state.spotCoords, friends[friend].location)) {
+                    console.log('in range: ' + friends[friend].name);
+                    add += 1;
+                }
+            }
+        }
+        return add;
+    }
+    
+    /**
+     * Function to return true, if a friend is also in range of a spot.
+     * @param {Array} spot lat, lon of location of the spot
+     * @param {Array} location lat, lon of location of a friend 
+     */
+    friendInRange(spot, location) {
+        let dist = this.calcDistance(spot, location);
+        return (dist <= this.state.circleRange ? true : false);
+    }
+
+    /**
+     * Calculate the distance in km of two provided points.
+     * @param {Array} latlng1 first point - [latitude, longitude]
+     * @param {Array} latlng2 second point - [latitude, longitude]
+     */
+    calcDistance(latlng1, latlng2) {
+        // Deg --> Rad
+        var lat1 = latlng1[0]*Math.PI/180;
+        var lat2 = latlng2[0]*Math.PI/180;
+        var lng1 = latlng1[1]*Math.PI/180;
+        var lng2 = latlng2[1]*Math.PI/180;
+        // distance calculation:
+        var cosG = Math.sin(lat1)*Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1);
+        var dist = 6378.388 * Math.acos(cosG);
+        return dist;
+    };
+
+    /**
+     * Function to add selected spot to state without re-rendering.
      * @param {String} spot name of selected spot 
      */
     submitSpot(spot) {
@@ -151,15 +200,17 @@ class Prompt extends React.Component {
     }
 
     /**
-     * 
+     * Function to add points to the score, when the question is submitted.
+     * Setting the state leads to re-rendering the Prompt to go to next question.
      * @param {Array} answer array containing letter and value of answer
      */
     submitAnswer(answer, event) {
         if (this.state.selectedAnswer === null) {
-            // this.state.selectedAnswer = answer; 
+            let friendsNearby = this.checkForFriends();
+            // this.state.selectedAnswer = answer;
             let points = 0;
             if (answer[0] === this.state.qset[this.state.numberOfQuestions - 1].Answer) {
-                points = 5;
+                points = 5 + friendsNearby;
             }
             let newScore = this.state.newScore + points;
             this.setState({
@@ -242,5 +293,5 @@ class Prompt extends React.Component {
 }
 
 module.exports = {
-    Prompt: Prompt
+    Game: Game
 }
