@@ -34,6 +34,7 @@ class App extends React.Component {
         this.handleZoomMapChange = this.handleZoomMapChange.bind(this);
         this.handleDragMapChange = this.handleDragMapChange.bind(this);
         this.handleGameModeChange = this.handleGameModeChange.bind(this);
+        this.handleGpsForFriendsChange = this.handleGpsForFriendsChange.bind(this);
         this.handleClickAbout = this.handleClickAbout.bind(this);
         this.handleClickSettings = this.handleClickSettings.bind(this);
         this.handleClickHelp = this.handleClickHelp.bind(this);
@@ -46,8 +47,9 @@ class App extends React.Component {
             externalData: config.app.externalData,
             gps: config.app.gps,
             layerControl: config.app.layerControl,
-            zoomable: config.map.draggable,
-            draggable: config.map.zoomable,
+            zoomable: config.map.zoomable,
+            draggable: config.map.draggable,
+            gpsForFriends: config.map.gpsForFriends,
             gamemode: config.map.gamemode,
             index: 0
         };
@@ -105,6 +107,18 @@ class App extends React.Component {
         this.setState({zoomable: bool});
     }
 
+    /**
+     * Handle the change of the parameter from the lower level
+     * @param {Boolean} bool value of the change 
+     */
+    handleGpsForFriendsChange(bool) {
+        this.setState({gpsForFriends: bool});
+    }
+
+    /**
+     * Handle the change of the parameter from Map component
+     * @param {Boolean} bool value of the change 
+     */
     handleGameModeChange(bool) {
         this.setState({gamemode: bool});
     }
@@ -185,6 +199,7 @@ class App extends React.Component {
                                 layerControl={this.state.layerControl}
                                 draggable={this.state.draggable}  
                                 zoomable={this.state.zoomable}
+                                gpsForFriends={this.state.gpsForFriends}
                                 gamemode={this.state.gamemode}
                                 key='map' />,
                 tab: <Ons.Tab label='Map' icon='md-map' key='map' />
@@ -198,6 +213,7 @@ class App extends React.Component {
                                 layerControl={this.state.layerControl}
                                 draggable={this.state.draggable}  
                                 zoomable={this.state.zoomable} 
+                                gpsForFriends={this.state.gpsForFriends} 
                                 key='picture' />,
                 tab: <Ons.Tab label='Streetview' icon='md-image' key='picture' />
             },
@@ -210,12 +226,14 @@ class App extends React.Component {
                                 onLayerControlChange={this.handleLayerControlChange} 
                                 onDragMapChange={this.handleDragMapChange} 
                                 onZoomMapChange={this.handleZoomMapChange}
+                                onGpsForFriendsChange={this.handleGpsForFriendsChange}
                                 logging={this.state.logging} 
                                 externalData={this.state.externalData} 
                                 gps={this.state.gps} 
                                 layerControl={this.state.layerControl}
                                 draggable={this.state.draggable} 
                                 zoomable={this.state.zoomable} 
+                                gpsForFriends={this.state.gpsForFriends} 
                                 key='settings' />,
                 tab: <Ons.Tab label='Settings' icon='md-settings' key='settings' style={{display: 'none'}}/>
             },

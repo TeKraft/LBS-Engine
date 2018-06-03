@@ -27,6 +27,7 @@ class Map extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log(props);
         this.addLayers = this.addLayers.bind(this);
         this.renderMapWithLayers = this.renderMapWithLayers.bind(this);
         this.handleOverlayadd = this.handleOverlayadd.bind(this);
@@ -265,28 +266,30 @@ class Map extends React.Component {
     //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
     addLayers() {
         var mapLayers = [];
-               //adding friend layer
-        for (let friend in friends){
-            var friendElement = [];
-            for (var i = 0; i < friends[friend].length; i++) {
-                //if there is a popup, insert it into the map
-                if(friends[friend][i].showme) {
-                    friendElement.push(<leaflet.Marker position={friends[friend][i].location} key={friends[friend][i].name} icon={this.friendMarker}>
-                        <leaflet.Popup>
-                            <span>
-                                {friends[friend][i].name}
-                            </span>
-                        </leaflet.Popup>
-                        </leaflet.Marker>)
+        //adding friend layer if enabled
+        if (this.props.gpsForFriends) {
+            for (let friend in friends){
+                var friendElement = [];
+                for (var i = 0; i < friends[friend].length; i++) {
+                    //if there is a popup, insert it into the map
+                    if(friends[friend][i].showme) {
+                        friendElement.push(<leaflet.Marker position={friends[friend][i].location} key={friends[friend][i].name} icon={this.friendMarker}>
+                            <leaflet.Popup>
+                                <span>
+                                    {friends[friend][i].name}
+                                </span>
+                            </leaflet.Popup>
+                            </leaflet.Marker>)
+                    }
                 }
+                mapLayers.push(<leaflet.LayersControl.Overlay key={friend}
+                                                            name={friend}
+                                                            checked={true}>
+                                                            <leaflet.FeatureGroup key={friend}>
+                                                                {friendElement}
+                                                            </leaflet.FeatureGroup>
+                                </leaflet.LayersControl.Overlay>)
             }
-            mapLayers.push(<leaflet.LayersControl.Overlay key={friend}
-                                                        name={friend}
-                                                        checked={true}>
-                                                        <leaflet.FeatureGroup key={friend}>
-                                                            {friendElement}
-                                                        </leaflet.FeatureGroup>
-                            </leaflet.LayersControl.Overlay>)
         }
         for (let layer in layers) {
             var layerElement = [];
@@ -380,6 +383,7 @@ class Map extends React.Component {
                     scores={this.state.scores}
                     score={this.state.score}
                     questionnaire={true}
+                    gpsForFriends={this.props.gpsForFriends}
                     onEndGameChange={this.handleEndGame}
                 >
                 </game.Game>

@@ -22,6 +22,7 @@ class Settings extends React.Component {
         this.handleChangeLayerControl = this.handleChangeLayerControl.bind(this);
         this.handleChangeDragMap =  this.handleChangeDragMap.bind(this);
         this.handleChangeZoomMap = this.handleChangeZoomMap.bind(this);
+        this.handleChangeGpsForFriends = this.handleChangeGpsForFriends.bind(this);
         this.createLog = this.createLog.bind(this);
     }
 
@@ -65,7 +66,7 @@ class Settings extends React.Component {
             logger.logEntry(entry);
         }, function error(err) {
             //if there was an error getting the position, log a '-' for lat/lng
-            entry = ['-', '-', 'Settigns', action];
+            entry = ['-', '-', 'Settings', action];
             //log the data
             logger.logEntry(entry);
         })
@@ -99,6 +100,12 @@ class Settings extends React.Component {
     handleChangeZoomMap(e) {
         this.props.onZoomMapChange(e.target.checked);
         this.createLog('Map Zooming', e.target.checked);
+    }
+
+    //handle toggle of gps for friends
+    handleChangeGpsForFriends(e) {
+        this.props.onGpsForFriendsChange(e.target.checked);
+        this.createLog('GPS for Friends', e.target.checked);
     }
 
     render() {
@@ -163,6 +170,16 @@ class Settings extends React.Component {
                             <Ons.Switch 
                                 checked={this.props.zoomable}
                                 onChange={this.handleChangeZoomMap} />
+                        </div>
+                    </Ons.ListItem>
+                    <Ons.ListItem key='gpsFriends'>
+                        <div className='left'>
+                            <p>GPS for Friends</p>
+                        </div>
+                        <div className='right'>
+                            <Ons.Switch 
+                                checked={this.props.gpsForFriends}
+                                onChange={this.handleChangeGpsForFriends} />
                         </div>
                     </Ons.ListItem>
                 </Ons.List>

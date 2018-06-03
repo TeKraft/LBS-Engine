@@ -230,11 +230,14 @@ class Game extends React.Component {
      */
     submitAnswer(answer, event) {
         if (this.state.selectedAnswer === null) {
-            let friendsNearby = this.checkForFriends();
             // this.state.selectedAnswer = answer;
             let points = 0;
             if (answer[0] === this.state.qset[this.state.numberOfQuestions - 1].Answer) {
-                points = 5 + friendsNearby;
+                if (this.props.gpsForFriends) {
+                    points = 5 + this.checkForFriends();
+                } else {
+                    points = 5;
+               }
             }
             let newScore = this.state.newScore + points;
             this.setState({

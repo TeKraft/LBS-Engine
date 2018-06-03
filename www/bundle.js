@@ -106932,7 +106932,8 @@ module.exports={
         "draggable": true,
         "zoom": 20,
         "gamemode": false,
-        "circleRange": 0.2
+        "circleRange": 0.2,
+        "gpsForFriends": true
     }
 }
 },{}],364:[function(require,module,exports){
@@ -107586,6 +107587,7 @@ class App extends React.Component {
         this.handleZoomMapChange = this.handleZoomMapChange.bind(this);
         this.handleDragMapChange = this.handleDragMapChange.bind(this);
         this.handleGameModeChange = this.handleGameModeChange.bind(this);
+        this.handleGpsForFriendsChange = this.handleGpsForFriendsChange.bind(this);
         this.handleClickAbout = this.handleClickAbout.bind(this);
         this.handleClickSettings = this.handleClickSettings.bind(this);
         this.handleClickHelp = this.handleClickHelp.bind(this);
@@ -107598,8 +107600,9 @@ class App extends React.Component {
             externalData: config.app.externalData,
             gps: config.app.gps,
             layerControl: config.app.layerControl,
-            zoomable: config.map.draggable,
-            draggable: config.map.zoomable,
+            zoomable: config.map.zoomable,
+            draggable: config.map.draggable,
+            gpsForFriends: config.map.gpsForFriends,
             gamemode: config.map.gamemode,
             index: 0
         };
@@ -107657,6 +107660,18 @@ class App extends React.Component {
         this.setState({ zoomable: bool });
     }
 
+    /**
+     * Handle the change of the parameter from the lower level
+     * @param {Boolean} bool value of the change 
+     */
+    handleGpsForFriendsChange(bool) {
+        this.setState({ gpsForFriends: bool });
+    }
+
+    /**
+     * Handle the change of the parameter from Map component
+     * @param {Boolean} bool value of the change 
+     */
     handleGameModeChange(bool) {
         this.setState({ gamemode: bool });
     }
@@ -107765,6 +107780,7 @@ class App extends React.Component {
                 layerControl: this.state.layerControl,
                 draggable: this.state.draggable,
                 zoomable: this.state.zoomable,
+                gpsForFriends: this.state.gpsForFriends,
                 gamemode: this.state.gamemode,
                 key: 'map' }),
             tab: React.createElement(Ons.Tab, { label: 'Map', icon: 'md-map', key: 'map' })
@@ -107778,6 +107794,7 @@ class App extends React.Component {
                 layerControl: this.state.layerControl,
                 draggable: this.state.draggable,
                 zoomable: this.state.zoomable,
+                gpsForFriends: this.state.gpsForFriends,
                 key: 'picture' }),
             tab: React.createElement(Ons.Tab, { label: 'Streetview', icon: 'md-image', key: 'picture' })
         },
@@ -107790,12 +107807,14 @@ class App extends React.Component {
                 onLayerControlChange: this.handleLayerControlChange,
                 onDragMapChange: this.handleDragMapChange,
                 onZoomMapChange: this.handleZoomMapChange,
+                onGpsForFriendsChange: this.handleGpsForFriendsChange,
                 logging: this.state.logging,
                 externalData: this.state.externalData,
                 gps: this.state.gps,
                 layerControl: this.state.layerControl,
                 draggable: this.state.draggable,
                 zoomable: this.state.zoomable,
+                gpsForFriends: this.state.gpsForFriends,
                 key: 'settings' }),
             tab: React.createElement(Ons.Tab, { label: 'Settings', icon: 'md-settings', key: 'settings', style: { display: 'none' } })
         },
@@ -108214,11 +108233,14 @@ class Game extends React.Component {
      */
     submitAnswer(answer, event) {
         if (this.state.selectedAnswer === null) {
-            let friendsNearby = this.checkForFriends();
             // this.state.selectedAnswer = answer;
             let points = 0;
             if (answer[0] === this.state.qset[this.state.numberOfQuestions - 1].Answer) {
-                points = 5 + friendsNearby;
+                if (this.props.gpsForFriends) {
+                    points = 5 + this.checkForFriends();
+                } else {
+                    points = 5;
+                }
             }
             let newScore = this.state.newScore + points;
             this.setState({
@@ -108412,6 +108434,7 @@ class Map extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log(props);
         this.addLayers = this.addLayers.bind(this);
         this.renderMapWithLayers = this.renderMapWithLayers.bind(this);
         this.handleOverlayadd = this.handleOverlayadd.bind(this);
@@ -108647,38 +108670,40 @@ class Map extends React.Component {
     //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
     addLayers() {
         var mapLayers = [];
-        //adding friend layer
-        for (let friend in friends) {
-            var friendElement = [];
-            for (var i = 0; i < friends[friend].length; i++) {
-                //if there is a popup, insert it into the map
-                if (friends[friend][i].showme) {
-                    friendElement.push(React.createElement(
-                        leaflet.Marker,
-                        { position: friends[friend][i].location, key: friends[friend][i].name, icon: this.friendMarker },
-                        React.createElement(
-                            leaflet.Popup,
-                            null,
+        //adding friend layer if enabled
+        if (this.props.gpsForFriends) {
+            for (let friend in friends) {
+                var friendElement = [];
+                for (var i = 0; i < friends[friend].length; i++) {
+                    //if there is a popup, insert it into the map
+                    if (friends[friend][i].showme) {
+                        friendElement.push(React.createElement(
+                            leaflet.Marker,
+                            { position: friends[friend][i].location, key: friends[friend][i].name, icon: this.friendMarker },
                             React.createElement(
-                                'span',
+                                leaflet.Popup,
                                 null,
-                                friends[friend][i].name
+                                React.createElement(
+                                    'span',
+                                    null,
+                                    friends[friend][i].name
+                                )
                             )
-                        )
-                    ));
+                        ));
+                    }
                 }
+                mapLayers.push(React.createElement(
+                    leaflet.LayersControl.Overlay,
+                    { key: friend,
+                        name: friend,
+                        checked: true },
+                    React.createElement(
+                        leaflet.FeatureGroup,
+                        { key: friend },
+                        friendElement
+                    )
+                ));
             }
-            mapLayers.push(React.createElement(
-                leaflet.LayersControl.Overlay,
-                { key: friend,
-                    name: friend,
-                    checked: true },
-                React.createElement(
-                    leaflet.FeatureGroup,
-                    { key: friend },
-                    friendElement
-                )
-            ));
         }
         for (let layer in layers) {
             var layerElement = [];
@@ -108783,6 +108808,7 @@ class Map extends React.Component {
                 scores: this.state.scores,
                 score: this.state.score,
                 questionnaire: true,
+                gpsForFriends: this.props.gpsForFriends,
                 onEndGameChange: this.handleEndGame
             });
         } else {
@@ -109123,6 +109149,7 @@ class Settings extends React.Component {
         this.handleChangeLayerControl = this.handleChangeLayerControl.bind(this);
         this.handleChangeDragMap = this.handleChangeDragMap.bind(this);
         this.handleChangeZoomMap = this.handleChangeZoomMap.bind(this);
+        this.handleChangeGpsForFriends = this.handleChangeGpsForFriends.bind(this);
         this.createLog = this.createLog.bind(this);
     }
 
@@ -109164,7 +109191,7 @@ class Settings extends React.Component {
             logger.logEntry(entry);
         }, function error(err) {
             //if there was an error getting the position, log a '-' for lat/lng
-            entry = ['-', '-', 'Settigns', action];
+            entry = ['-', '-', 'Settings', action];
             //log the data
             logger.logEntry(entry);
         });
@@ -109198,6 +109225,12 @@ class Settings extends React.Component {
     handleChangeZoomMap(e) {
         this.props.onZoomMapChange(e.target.checked);
         this.createLog('Map Zooming', e.target.checked);
+    }
+
+    //handle toggle of gps for friends
+    handleChangeGpsForFriends(e) {
+        this.props.onGpsForFriendsChange(e.target.checked);
+        this.createLog('GPS for Friends', e.target.checked);
     }
 
     render() {
@@ -109325,6 +109358,26 @@ class Settings extends React.Component {
                         React.createElement(Ons.Switch, {
                             checked: this.props.zoomable,
                             onChange: this.handleChangeZoomMap })
+                    )
+                ),
+                React.createElement(
+                    Ons.ListItem,
+                    { key: 'gpsFriends' },
+                    React.createElement(
+                        'div',
+                        { className: 'left' },
+                        React.createElement(
+                            'p',
+                            null,
+                            'GPS for Friends'
+                        )
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'right' },
+                        React.createElement(Ons.Switch, {
+                            checked: this.props.gpsForFriends,
+                            onChange: this.handleChangeGpsForFriends })
                     )
                 )
             )
