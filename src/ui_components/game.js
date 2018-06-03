@@ -49,19 +49,21 @@ class Game extends React.Component {
      */
     closeGame() {
         if (this.state.selectedSpot !== null) {
-            if (this.state.selectedSpot !== null) {
-                let scoreboard = {
-                    spot: this.state.selectedSpot,
-                    newScore: 0,
-                    scores: this.state.scores
-                };
-    
-                try {
-                    this.props.onEndGameChange(scoreboard);
-                    this.setState({selected: false});
-                } catch(e) {
-                    console.log('Error:\n' + e);
-                }
+            let score = 0;
+            if (this.state.scores[this.state.selectedSpot] !== undefined && this.state.scores[this.state.selectedSpot] > score) {
+                score = this.state.scores[this.state.selectedSpot];
+            }
+            let scoreboard = {
+                spot: this.state.selectedSpot,
+                newScore: score,
+                scores: this.state.scores
+            };
+
+            try {
+                this.props.onEndGameChange(scoreboard);
+                this.setState({selected: false});
+            } catch(e) {
+                console.log('Error:\n' + e);
             }
         } else {
             alert('Attention!\nPlease select a spot before closing the game.');

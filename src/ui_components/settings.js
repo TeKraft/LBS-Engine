@@ -108,6 +108,12 @@ class Settings extends React.Component {
         this.createLog('GPS for Friends', e.target.checked);
     }
 
+    // reset localStorage to clear history
+    clearStorage() {
+        console.log(localStorage);
+        localStorage.clear();
+    }
+
     render() {
         return (
             <Ons.Page>
@@ -180,6 +186,14 @@ class Settings extends React.Component {
                             <Ons.Switch 
                                 checked={this.props.gpsForFriends}
                                 onChange={this.handleChangeGpsForFriends} />
+                        </div>
+                    </Ons.ListItem>
+                    <Ons.ListItem key='scoreboardHistory'>
+                        <div className='left'>
+                            <p>Scoreboard History</p>
+                        </div>
+                        <div className='right'>
+                            <Ons.Button onClick={this.clearStorage}>clear</Ons.Button>
                         </div>
                     </Ons.ListItem>
                 </Ons.List>

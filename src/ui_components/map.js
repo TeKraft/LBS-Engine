@@ -88,7 +88,9 @@ class Map extends React.Component {
 
         // Update location and keep current zoom level as soon as movement begins. Distancefilter is set to 1 meter
         that.watchID = navigator.geolocation.watchPosition(function success(position) {
+            console.log(that.map);
             if (that.map) {
+                console.log(that.map.leafletElement);
                 var zoomLvl = that.map.leafletElement.getZoom();
             } else {
                 var zoomLvl = config.map.zoom;

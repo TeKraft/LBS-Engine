@@ -106930,7 +106930,7 @@ module.exports={
         "center": [51.9692495, 7.596022],
         "zoomable": true,
         "draggable": true,
-        "zoom": 20,
+        "zoom": 16,
         "gamemode": false,
         "circleRange": 0.2,
         "gpsForFriends": true
@@ -106981,6 +106981,14 @@ module.exports={
          "location": [
            51.947120,
            7.589176
+         ]
+     },
+     {
+         "name": "aaseeDuck69",
+         "showme": true,
+         "location": [
+           51.956,
+           7.617
          ]
      }
    ]
@@ -107399,7 +107407,7 @@ module.exports={
             "popup":"Aasee-Giant Pool Balls",
             "qset":[
                {
-                  "Question":"?",
+                  "Question":"When was the waterbus 'Professor Landois' built?",
                   "Options":[
                      {
                         "A":"1972"
@@ -108048,19 +108056,21 @@ class Game extends React.Component {
      */
     closeGame() {
         if (this.state.selectedSpot !== null) {
-            if (this.state.selectedSpot !== null) {
-                let scoreboard = {
-                    spot: this.state.selectedSpot,
-                    newScore: 0,
-                    scores: this.state.scores
-                };
+            let score = 0;
+            if (this.state.scores[this.state.selectedSpot] !== undefined && this.state.scores[this.state.selectedSpot] > score) {
+                score = this.state.scores[this.state.selectedSpot];
+            }
+            let scoreboard = {
+                spot: this.state.selectedSpot,
+                newScore: score,
+                scores: this.state.scores
+            };
 
-                try {
-                    this.props.onEndGameChange(scoreboard);
-                    this.setState({ selected: false });
-                } catch (e) {
-                    console.log('Error:\n' + e);
-                }
+            try {
+                this.props.onEndGameChange(scoreboard);
+                this.setState({ selected: false });
+            } catch (e) {
+                console.log('Error:\n' + e);
             }
         } else {
             alert('Attention!\nPlease select a spot before closing the game.');
@@ -108494,7 +108504,9 @@ class Map extends React.Component {
 
         // Update location and keep current zoom level as soon as movement begins. Distancefilter is set to 1 meter
         that.watchID = navigator.geolocation.watchPosition(function success(position) {
+            console.log(that.map);
             if (that.map) {
+                console.log(that.map.leafletElement);
                 var zoomLvl = that.map.leafletElement.getZoom();
             } else {
                 var zoomLvl = config.map.zoom;
@@ -109233,6 +109245,12 @@ class Settings extends React.Component {
         this.createLog('GPS for Friends', e.target.checked);
     }
 
+    // reset localStorage to clear history
+    clearStorage() {
+        console.log(localStorage);
+        localStorage.clear();
+    }
+
     render() {
         return React.createElement(
             Ons.Page,
@@ -109378,6 +109396,28 @@ class Settings extends React.Component {
                         React.createElement(Ons.Switch, {
                             checked: this.props.gpsForFriends,
                             onChange: this.handleChangeGpsForFriends })
+                    )
+                ),
+                React.createElement(
+                    Ons.ListItem,
+                    { key: 'scoreboardHistory' },
+                    React.createElement(
+                        'div',
+                        { className: 'left' },
+                        React.createElement(
+                            'p',
+                            null,
+                            'Scoreboard History'
+                        )
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'right' },
+                        React.createElement(
+                            Ons.Button,
+                            { onClick: this.clearStorage },
+                            'clear'
+                        )
                     )
                 )
             )
