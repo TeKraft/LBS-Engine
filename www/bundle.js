@@ -106920,9 +106920,9 @@ module.exports = {
 },{"leaflet-offline":112,"localforage":115,"prop-types":303,"react":358,"react-leaflet":343}],363:[function(require,module,exports){
 module.exports={
     "app": {
-        "logging": false,
+        "logging": true,
         "externalData": false,
-        "gps": false,
+        "gps": true,
         "layerControl": true,
         "numberOfImages": 3
     },

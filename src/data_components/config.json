@@ -1,8 +1,8 @@
 {
     "app": {
-        "logging": false,
+        "logging": true,
         "externalData": false,
-        "gps": false,
+        "gps": true,
         "layerControl": true,
         "numberOfImages": 3
     },
