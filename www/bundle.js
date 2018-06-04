@@ -109255,6 +109255,7 @@ class Settings extends React.Component {
     clearStorage() {
         console.log(localStorage);
         localStorage.clear();
+        alert('Your score history has been cleared.');
     }
 
     render() {
