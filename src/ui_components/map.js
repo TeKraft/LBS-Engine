@@ -298,10 +298,25 @@ class Map extends React.Component {
                 for (var i = 0; i < layers[layer].items.length; i++) {
                     //if there is a popup, insert it into the map
                     if(layers[layer].items[i].popup != undefined) {
+                        let checkStorage = localStorage.getItem(layers[layer].items[i].name);
+
+                        let markerPopup = '';
+
+                        if (checkStorage !== null) {
+                            markerPopup = 'Highscore: ' + checkStorage;
+                        } else {
+                            markerPopup = 'This spot has no score.';
+                        }
+
                         layerElement.push(<leaflet.Marker position={layers[layer].items[i].coords} key={layers[layer].items[i].name} icon={this.tSpotMarker}>
                             <leaflet.Popup>
                                 <span>
-                                    {layers[layer].items[i].popup}
+                                    <h4>
+                                        {layers[layer].items[i].popup}
+                                    </h4>
+                                    <p>
+                                        {markerPopup}
+                                    </p>
                                 </span>
                             </leaflet.Popup>
                             </leaflet.Marker>)
