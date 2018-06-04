@@ -6,6 +6,7 @@ const Button = require('react-bootstrap/lib/Button');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+// const layers = require('../data_components/layersMockUp.json');
 const friendsJSON = require('../data_components/friend.json');
 //logic
 const logger = require('../business_components/logger.js');

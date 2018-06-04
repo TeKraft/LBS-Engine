@@ -106940,56 +106940,64 @@ module.exports={
 module.exports={
    "friends": [
      {
-       "name": "sam99",
-         "showme": true,
-         "location": [
-           51.965,
-           7.610546
-         ]
+        "name": "sam99",
+        "showme": true,
+        "location": [
+          51.965,
+          7.610546
+        ]
      },
      {
-       "name": "traveller1",
-         "showme": false
+        "name": "traveller1",
+        "showme": false
      },
      {
-       "name": "JoyReise",
-         "showme": true,
-         "location": [
-           51.9622,
-           7.630136
-         ]
+        "name": "JoyReise",
+        "showme": true,
+        "location": [
+          51.9622,
+          7.630136
+        ]
      },
      {
-       "name": "NightSky",
-         "showme": true,
-         "location": [
-           51.9602,
-           7.625136
-         ]
+        "name": "NightSky",
+        "showme": true,
+        "location": [
+          51.9602,
+          7.625136
+        ]
      },
      {
-       "name": "Hans",
-         "showme": false
+        "name": "Hans",
+        "showme": false
      },
      {
-       "name": "guide007",
-         "showme": false
+        "name": "guide007",
+        "showme": false
      },
      {
-         "name": "luggage",
-         "showme": true,
-         "location": [
-           51.947120,
-           7.589176
-         ]
+        "name": "luggage",
+        "showme": true,
+        "location": [
+          51.947120,
+          7.589176
+        ]
      },
      {
-         "name": "aaseeDuck69",
-         "showme": true,
-         "location": [
-           51.956,
-           7.617
-         ]
+        "name": "aaseeDuck69",
+        "showme": true,
+        "location": [
+          51.956,
+          7.617
+        ]
+     },
+     {
+        "name": "geolino",
+        "showme": true,
+        "location": [
+          51.969728,
+          7.595531
+        ]
      }
    ]
 }
@@ -107568,6 +107576,7 @@ const Ons = require('react-onsenui');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+// const layers = require('../data_components/layersMockUp.json');
 //ui
 const map = require('./map.js');
 const pictureView = require('./pictureView.js');
@@ -108014,6 +108023,7 @@ const Button = require('react-bootstrap/lib/Button');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+// const layers = require('../data_components/layersMockUp.json');
 const friendsJSON = require('../data_components/friend.json');
 //logic
 const logger = require('../business_components/logger.js');
@@ -108423,6 +108433,7 @@ const CordovaPromiseFS = require('cordova-promise-fs');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+// const layers = require('../data_components/layersMockUp.json');
 const friends = require('../data_components/friend.json');
 //ui
 const game = require('./game.js');
@@ -108504,9 +108515,7 @@ class Map extends React.Component {
 
         // Update location and keep current zoom level as soon as movement begins. Distancefilter is set to 1 meter
         that.watchID = navigator.geolocation.watchPosition(function success(position) {
-            console.log(that.map);
             if (that.map) {
-                console.log(that.map.leafletElement);
                 var zoomLvl = that.map.leafletElement.getZoom();
             } else {
                 var zoomLvl = config.map.zoom;
@@ -108794,7 +108803,7 @@ class Map extends React.Component {
                 zoomDelta: this.props.zoomable == false ? 0 : 1,
                 onOverlayadd: this.handleOverlayadd,
                 onOverlayremove: this.handleOverlayremove,
-                ref: 'map' },
+                ref: map => this.map = map },
             React.createElement(OfflineLayer.OfflineLayer, {
                 url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 attribution: 'Map data \xA9 <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -108852,7 +108861,7 @@ class Map extends React.Component {
                         zoomControl: this.props.zoomable,
                         scrollWheelZoom: this.props.zoomable,
                         zoomDelta: this.props.zoomable == false ? 0 : 1,
-                        ref: 'map' },
+                        ref: map => this.map = map },
                     React.createElement(OfflineLayer.OfflineLayer, {
                         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                         attribution: 'Map data \xA9 <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

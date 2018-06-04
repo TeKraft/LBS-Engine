@@ -1,56 +1,64 @@
 {
    "friends": [
      {
-       "name": "sam99",
-         "showme": true,
-         "location": [
-           51.965,
-           7.610546
-         ]
+        "name": "sam99",
+        "showme": true,
+        "location": [
+          51.965,
+          7.610546
+        ]
      },
      {
-       "name": "traveller1",
-         "showme": false
+        "name": "traveller1",
+        "showme": false
      },
      {
-       "name": "JoyReise",
-         "showme": true,
-         "location": [
-           51.9622,
-           7.630136
-         ]
+        "name": "JoyReise",
+        "showme": true,
+        "location": [
+          51.9622,
+          7.630136
+        ]
      },
      {
-       "name": "NightSky",
-         "showme": true,
-         "location": [
-           51.9602,
-           7.625136
-         ]
+        "name": "NightSky",
+        "showme": true,
+        "location": [
+          51.9602,
+          7.625136
+        ]
      },
      {
-       "name": "Hans",
-         "showme": false
+        "name": "Hans",
+        "showme": false
      },
      {
-       "name": "guide007",
-         "showme": false
+        "name": "guide007",
+        "showme": false
      },
      {
-         "name": "luggage",
-         "showme": true,
-         "location": [
-           51.947120,
-           7.589176
-         ]
+        "name": "luggage",
+        "showme": true,
+        "location": [
+          51.947120,
+          7.589176
+        ]
      },
      {
-         "name": "aaseeDuck69",
-         "showme": true,
-         "location": [
-           51.956,
-           7.617
-         ]
+        "name": "aaseeDuck69",
+        "showme": true,
+        "location": [
+          51.956,
+          7.617
+        ]
+     },
+     {
+        "name": "geolino",
+        "showme": true,
+        "location": [
+          51.969728,
+          7.595531
+        ]
      }
    ]
 }

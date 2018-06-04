@@ -6,6 +6,7 @@ const CordovaPromiseFS = require('cordova-promise-fs');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+// const layers = require('../data_components/layersMockUp.json');
 const friends = require('../data_components/friend.json');
 //ui
 const game = require('./game.js');
@@ -88,9 +89,7 @@ class Map extends React.Component {
 
         // Update location and keep current zoom level as soon as movement begins. Distancefilter is set to 1 meter
         that.watchID = navigator.geolocation.watchPosition(function success(position) {
-            console.log(that.map);
             if (that.map) {
-                console.log(that.map.leafletElement);
                 var zoomLvl = that.map.leafletElement.getZoom();
             } else {
                 var zoomLvl = config.map.zoom;
@@ -359,7 +358,7 @@ class Map extends React.Component {
                 zoomDelta={this.props.zoomable == false ? 0 : 1}
                 onOverlayadd={this.handleOverlayadd}
                 onOverlayremove={this.handleOverlayremove}
-                ref='map'>
+                ref={(map) => this.map = map}>
                 <OfflineLayer.OfflineLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -417,7 +416,7 @@ class Map extends React.Component {
                             zoomControl={this.props.zoomable}
                             scrollWheelZoom={this.props.zoomable}
                             zoomDelta={this.props.zoomable == false ? 0 : 1}
-                            ref='map'> 
+                            ref={(map) => this.map = map}>
                             <OfflineLayer.OfflineLayer
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
