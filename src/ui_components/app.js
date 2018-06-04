@@ -6,7 +6,6 @@ const Ons = require('react-onsenui');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
-// const layers = require('../data_components/layersMockUp.json');
 //ui
 const map = require('./map.js');
 const pictureView =  require('./pictureView.js');

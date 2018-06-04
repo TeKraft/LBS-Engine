@@ -1,0 +1,552 @@
+{
+   "T-spots":{
+      "type":"marker",
+      "items":[
+         {
+            "coords":[
+               51.963886,
+               7.610546
+            ],
+            "name":"Botanical Garden",
+            "popup":"Botanical Garden",
+            "qset":[
+               {
+                  "Question":"When was the botanical garden built?",
+                  "Options":[
+                     {
+                        "A":"1800"
+                     },
+                     {
+                        "B":"1813"
+                     },
+                     {
+                        "C":"1803"
+                     },
+                     {
+                        "D":"1795"
+                     }
+                  ],
+                  "Answer":"C"
+               },
+               {
+                  "Question":"In 1990's what feature was added to the garden?",
+                  "Options":[
+                     {
+                        "A":"Stream"
+                     },
+                     {
+                        "B":"Pond"
+                     },
+                     {
+                        "C":"Medicinal greenhouse"
+                     },
+                     {
+                        "D":"Nothing"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"How many of the 280 known Pelargonium species are present in the garden?",
+                  "Options":[
+                     {
+                        "A":"15"
+                     },
+                     {
+                        "B":"230"
+                     },
+                     {
+                        "C":"275"
+                     },
+                     {
+                        "D":"140"
+                     }
+                  ],
+                  "Answer":"B"
+               },
+               {
+                  "Question":"The Bromeliad house contains pineapple plants from which part of the world?",
+                  "Options":[
+                     {
+                        "A":"Nordic region"
+                     },
+                     {
+                        "B":"Central Africa"
+                     },
+                     {
+                        "C":"South-east Asia"
+                     },
+                     {
+                        "D":"South and Central America"
+                     }
+                  ],
+                  "Answer":"D"
+               },
+               {
+                  "Question":"What is the spaciality of the Farntal area?",
+                  "Options":[
+                     {
+                        "A":"Mountain plants"
+                     },
+                     {
+                        "B":"Rock roses and olive"
+                     },
+                     {
+                        "C":"Plants from grasslands"
+                     },
+                     {
+                        "D":"Ferns"
+                     }
+                  ],
+                  "Answer":"D"
+               }
+            ]
+         },
+         {
+            "coords":[
+               51.962900,
+               7.629437
+            ],
+            "name":"St. Lamberti Church",
+            "popup":"St. Lamberti Church",
+            "qset":[
+               {
+                  "Question":"When was the Church built?",
+                  "Options":[
+                     {
+                        "A":"1275"
+                     },
+                     {
+                        "B":"1375"
+                     },
+                     {
+                        "C":"1475"
+                     },
+                     {
+                        "D":"1575"
+                     }
+                  ],
+                  "Answer":"B"
+               },
+               {
+                  "Question":"Who financed the building of Church?",
+                  "Options":[
+                     {
+                        "A":"Merchents of the city"
+                     },
+                     {
+                        "B":"Duke of Paris"
+                     },
+                     {
+                        "C":"Vatican"
+                     },
+                     {
+                        "D":"Governer of Muensterland"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"What hangs at the tower of the church?",
+                  "Options":[
+                     {
+                        "A":"3 wooden buckets"
+                     },
+                     {
+                        "B":"3 cooper swords"
+                     },
+                     {
+                        "C":"3 iron baskets"
+                     },
+                     {
+                        "D":"3 cooper bells"
+                     }
+                  ],
+                  "Answer":"C"
+               },
+               {
+                  "Question":"Who's representation lies on the west facade of the church?",
+                  "Options":[
+                     {
+                        "A":"Bernhard Knipperdolling"
+                     },
+                     {
+                        "B":"Johann Wolfgang von Goethe"
+                     },
+                     {
+                        "C":"Jan van Leiden"
+                     },
+                     {
+                        "D":"Friedrich Schiller"
+                     }
+                  ],
+                  "Answer":"B"
+               },
+               {
+                  "Question":"What landmark is to the east of church?",
+                  "Options":[
+                     {
+                        "A":"Domplatz"
+                     },
+                     {
+                        "B":"Lambertikirchplatz"
+                     },
+                     {
+                        "C":"Rye market"
+                     },
+                     {
+                        "D":"Old fish market"
+                     }
+                  ],
+                  "Answer":"D"
+               }
+            ]
+         },
+         {
+            "coords":[
+               51.948110,
+               7.587544
+            ],
+            "name":"All-weather Zoo",
+            "popup":"All-weather Zoo",
+            "qset":[
+               {
+                  "Question":"When was the current All-weather zoo built?",
+                  "Options":[
+                     {
+                        "A":"1972"
+                     },
+                     {
+                        "B":"1973"
+                     },
+                     {
+                        "C":"1974"
+                     },
+                     {
+                        "D":"1975"
+                     }
+                  ],
+                  "Answer":"C"
+               },
+               {
+                  "Question":"Who is the current zoo director?",
+                  "Options":[
+                     {
+                        "A":"H. Jörg Adler"
+                     },
+                     {
+                        "B":"Helmut Reichling"
+                     },
+                     {
+                        "C":"Hermann Landois"
+                     },
+                     {
+                        "D":"Thomas Wilms"
+                     }
+                  ],
+                  "Answer":"D"
+               },
+               {
+                  "Question":"What category of animals share the joint top count with Fish as of start of 2016?",
+                  "Options":[
+                     {
+                        "A":"Invertebrates"
+                     },
+                     {
+                        "B":"Amphibia"
+                     },
+                     {
+                        "C":"Birds"
+                     },
+                     {
+                        "D":"Reptilies"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"What is major attraction at the Robben Haven show?",
+                  "Options":[
+                     {
+                        "A":"California Sea Lions"
+                     },
+                     {
+                        "B":"Westphalian Horses"
+                     },
+                     {
+                        "C":"Asian Elephants"
+                     },
+                     {
+                        "D":"Penguin"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"What are Lories?",
+                  "Options":[
+                     {
+                        "A":"Penguin"
+                     },
+                     {
+                        "B":"Elephants"
+                     },
+                     {
+                        "C":"Vultures"
+                     },
+                     {
+                        "D":"Parrots"
+                     }
+                  ],
+                  "Answer":"D"
+               }
+            ]
+         },
+         {
+            "coords":[
+               51.960801,
+               7.624331
+            ],
+            "name":"LWL Cultural Museum",
+            "popup":"LWL Cultural Museum",
+            "qset":[
+               {
+                  "Question":"Which artist from Die Bruke movement does the museum specializes on?",
+                  "Options":[
+                     {
+                        "A":"Erich Heckel"
+                     },
+                     {
+                        "B":"August Macke"
+                     },
+                     {
+                        "C":"Fritz Bleyl"
+                     },
+                     {
+                        "D":"Emil Nolde"
+                     }
+                  ],
+                  "Answer":"B"
+               },
+               {
+                  "Question":"Which kind of painting does the museum has an extensive collection of?",
+                  "Options":[
+                     {
+                        "A":"Byzantine"
+                     },
+                     {
+                        "B":"fresco"
+                     },
+                     {
+                        "C":"Romanesque"
+                     },
+                     {
+                        "D":"spätgotik"
+                     }
+                  ],
+                  "Answer":"D"
+               },
+               {
+                  "Question":"When is the museum entry free for students?",
+                  "Options":[
+                     {
+                        "A":"Every 1st day of month"
+                     },
+                     {
+                        "B":"Every last weekend of month"
+                     },
+                     {
+                        "C":"Every second friday of month"
+                     },
+                     {
+                        "D":"All days"
+                     }
+                  ],
+                  "Answer":"C"
+               },
+               {
+                  "Question":"Which section is present in west wing of first floor of the museum?",
+                  "Options":[
+                     {
+                        "A":"Modern contemporary art"
+                     },
+                     {
+                        "B":"Roman christian paintings"
+                     },
+                     {
+                        "C":"Paintings focused of Peace"
+                     },
+                     {
+                        "D":"None of the above"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"What is the count of inventory in the museum library?",
+                  "Options":[
+                     {
+                        "A":"100,000"
+                     },
+                     {
+                        "B":"130,000"
+                     },
+                     {
+                        "C":"90,000"
+                     },
+                     {
+                        "D":"190,000"
+                     }
+                  ],
+                  "Answer":"B"
+               }
+            ]
+         },
+         {
+            "coords":[
+               51.956902,
+               7.618507
+            ],
+            "name":"Aasee-Giant Pool Balls",
+            "popup":"Aasee-Giant Pool Balls",
+            "qset":[
+               {
+                  "Question":"When was the waterbus 'Professor Landois' built?",
+                  "Options":[
+                     {
+                        "A":"1972"
+                     },
+                     {
+                        "B":"1973"
+                     },
+                     {
+                        "C":"1974"
+                     },
+                     {
+                        "D":"1975"
+                     }
+                  ],
+                  "Answer":"C"
+               },
+               {
+                  "Question":"What was Petra who visited Aasee in 2006?",
+                  "Options":[
+                     {
+                        "A":"Black Swan"
+                     },
+                     {
+                        "B":"Black Crane"
+                     },
+                     {
+                        "C":"Black Kite"
+                     },
+                     {
+                        "D":"Crow"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"What did the artist Wilm Weppelmann installed at Aasee?",
+                  "Options":[
+                     {
+                        "A":"Floating baloons"
+                     },
+                     {
+                        "B":"Floating status of Elephant"
+                     },
+                     {
+                        "C":"Floating vegetable garden"
+                     },
+                     {
+                        "D":"Floating replica of Dom"
+                     }
+                  ],
+                  "Answer":"A"
+               },
+               {
+                  "Question":"When did the lake got its current day structure?",
+                  "Options":[
+                     {
+                        "A":"1944"
+                     },
+                     {
+                        "B":"1930"
+                     },
+                     {
+                        "C":"1919"
+                     },
+                     {
+                        "D":"1934"
+                     }
+                  ],
+                  "Answer":"D"
+               },
+               {
+                  "Question":"Name of the vehicle bridge on Aasee?",
+                  "Options":[
+                     {
+                        "A":"Tormin"
+                     },
+                     {
+                        "B":"Tomin"
+                     },
+                     {
+                        "C":"Tronim"
+                     },
+                     {
+                        "D":"Tromim"
+                     }
+                  ],
+                  "Answer":"A"
+               }
+            ]
+         }
+      ]
+   },
+   "T-Zones":{
+      "type":"zone",
+      "items":[
+         {
+            "center":[
+               51.963886,
+               7.610546
+            ],
+            "radius":200,
+            "name":"Botanical Garden zone"
+         },
+         {
+            "center":[
+               51.962900,
+               7.629437
+            ],
+            "radius":200,
+            "name":"St. Lamberti Church"
+         },
+         {
+            "center":[
+               51.948110,
+               7.587544
+            ],
+            "radius":200,
+            "name":"All-weather Zoo"
+         },
+         {
+            "center":[
+               51.960801,
+               7.624331
+            ],
+            "radius":200,
+            "name":"LWL Cultural Museum"
+         },
+         {
+            "center":[
+               51.956902,
+               7.618507
+            ],
+            "radius":200,
+            "name":"Aasee-Giant Pool Balls"
+         }
+      ]
+   }
+}

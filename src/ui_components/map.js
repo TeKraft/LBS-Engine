@@ -6,7 +6,6 @@ const CordovaPromiseFS = require('cordova-promise-fs');
 //data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
-// const layers = require('../data_components/layersMockUp.json');
 const friends = require('../data_components/friend.json');
 //ui
 const game = require('./game.js');
