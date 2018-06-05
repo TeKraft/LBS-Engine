@@ -19,6 +19,12 @@ For the installation we need to install the following dependencies:
 - Create application (bundle.js) with `npm run build`
 - Start application with `cordova run <platform_name>`
 
+### Layers Exchange
+
+If you would like to test your application in your own hometown have a look at the layers.json [here](https://github.com/TeKraft/TourChamp/tree/master/src/data_components). There you can see the overall scheme of the spots, that are added to the map. The current layers.json is for the inner city of Münster. The layersMockUpMS.json was edited for a presentation around the [IfGi](https://www.uni-muenster.de/Geoinformatics/) in Münster.
+
+If you want to take your own spots, edit the layers.json or add a new file. Then this new file needs be loaded in the App, Map and Game component instead of the layers.json. Good luck.
+
 ### Architectural Overview
 
 The developed application added a new component to the existing architecture and also edited other components. To fully integrate the new Game component, the App, Map and Settings component needed to be updated.
