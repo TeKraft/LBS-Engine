@@ -15,7 +15,7 @@ For the installation we need to install the following dependencies:
 
 - Clone this repository with `git clone https://github.com/TeKraft/TourChamp.git`
 - Install dependencies with `npm install`
-- Add a platform to cordova with `cordova add platform <platform_naame>` (e.g. browser or android)
+- Add a platform to cordova with `cordova platform add <platform_name>` (e.g. browser or android)
 - Create application (bundle.js) with `npm run build`
 - Start application with `cordova run <platform_name>`
 
