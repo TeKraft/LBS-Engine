@@ -12,7 +12,7 @@
         "draggable": true,
         "zoom": 16,
         "gamemode": false,
-        "circleRange": 0.02,
+        "circleRange": 0.2,
         "gpsForFriends": false
     }
 }
